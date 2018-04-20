@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ETL best practices with Airflow documentation site &mdash; ETL Best Practices with Airflow v1.8</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> Faster Search 0.1
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">ETL best practices with Airflow documentation site</a><ul>
+<li><a class="reference internal" href="#content">Content</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+    <br/>
+    <br/>
+    <a href="https://github.com/gtoonstra/etl-with-airflow"><img src="_images/GitHub-Mark-Light-32px.png">&nbsp;Go to Github</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Faster Search 0.1</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>ETL best practices with Airflow documentation site</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="etl-best-practices-with-airflow-documentation-site">
+<h1>ETL best practices with Airflow documentation site<a class="headerlink" href="#etl-best-practices-with-airflow-documentation-site" title="Permalink to this headline">¶</a></h1>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p><strong>Disclaimer</strong>: This is not the official documentation site for
+Apache airflow. This site is not affiliated, monitored or controlled by
+the official Apache Airflow development effort. If you are looking for
+the official documentation site, please follow this link:</p>
+<p><a class="reference external" href="https://airflow.incubator.apache.org/">Official Airflow documentation</a></p>
+<p>What you will find here are interesting examples, usage patterns and
+ETL principles that I thought are going to help people use airflow to
+much better effect.</p>
+<blockquote class="last">
+<div># Introduction</div></blockquote>
+</div>
+<p>This repository describes the search for a high-performance-search-analytics product which can sit between a traditional RDBMS or hadoop filesystem and application, and provide under 100ms query performance, search capability, handle large volumes, analytics, high availability etc.</p>
+<p># Proposed architecture
+This picture depicts where the product would sit within our existing architecture and interactions with other components:</p>
+<p>![Integral Layer](images/integral.png)</p>
+<p># Initial selection
+With what we are after it’s unlikely a single product can satisfy all requirements, so it’s likely there will be trade-offs therefore we have widen the scope to include a variety of data technologies. Though I must mention with plethora of products available (see below) doing an initial selection was not easy.</p>
+<p>![Data Platforms](images/DataPlatforms.png)</p>
+<p>Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it.</p>
+<p><a href="#id7"><span class="problematic" id="id8">|Product|In-Memory|Disk |Sec Index |Columnar|Text Search|Scales|HA|XDCR|</span></a> Lang.|Release|
+<a href="#id9"><span class="problematic" id="id10">|-------|</span></a>———<a href="#id11"><span class="problematic" id="id12">|-----|</span></a>———-<a href="#id13"><span class="problematic" id="id14">|--------|</span></a>———–<a href="#id15"><span class="problematic" id="id16">|------|</span></a>–<a href="#id17"><span class="problematic" id="id18">|----|</span></a>——<a href="#id19"><span class="problematic" id="id20">|-------|</span></a>
+<a href="#id21"><span class="problematic" id="id22">|Solr   | ✖ cache | ✔  | ✔       |        | ✔✔✔ Lucene|</span></a> Hor <a href="#id23"><span class="problematic" id="id24">|✔  |✔  | Java | 2004 |
+|Elastic|</span></a> ✖ cache| ✔   | ✔       |        | ✔✔✔ Lucene| Hor <a href="#id25"><span class="problematic" id="id26">|✔  | ✔ | Java | 2004 |
+|Oracle(Text)|</span></a> ✖ cache| ✔ | ✔    |        | ✔✔ Inverted| Ver| ✖ <a href="#id27"><span class="problematic" id="id28">|✔  | C    | 1997 |
+|PostgreSQL|</span></a> ✖    | ✔ | ✔        |        | ✔         | Hor  | ✔ | ✔ | C   | 1996 |
+<a href="#id29"><span class="problematic" id="id30">|MongoDB  | ✔ store|</span></a> ✔  | ✔      |        | ✔        | Hor  | ✔ |  ✔| C++  <a href="#id31"><span class="problematic" id="id32">|2009  |
+|Ignite(GG)|</span></a> ✔ store | ✔ | ✔     |        | ✔✔ Lucene| Hor  | ✔ <a href="#id33"><span class="problematic" id="id34">|✔  |Java  | 2007 |
+|EXASOL|</span></a> ✔ store |       | ✔      |  ✔    | ✖        | Hor  | ✔ | ✔ |      <a href="#id35"><span class="problematic" id="id36">|2000  |
+|VoltDB|</span></a> ✔       | ✔    | ✔      |  ✖     | ✖        | Hor  | ✔ | ✔ <a href="#id37"><span class="problematic" id="id38">|Java  | 2010 |
+|Vertica|✖       | ✔    | ✔      |  ✔     | ✖        | Hor  | ✔ |✔  |      | 2005 |
+|MariaDB|✖       | ✔    | ✔      |        | ✖        | Hor  |✔  |✔  | C    | 2009 |
+|Cassandra|✖     | ✔    | ✖      |        | ✖        | Hor  |✔  | ✔ | Java | 2008 |
+|Sphinx|</span></a> ✖ cache | ✔    | ✔      |        | ✔✔✔     | Hor  | ✔ | ✔ | C++  <a href="#id1"><span class="problematic" id="id2">|</span></a>2001  |
+<a href="#id3"><span class="problematic" id="id4">|</span></a>MemSQL|✔        | ✔    |        |  ✔     |           | Hor  | ✔ | ✔ | C++  | 2013 |
+<a href="#id5"><span class="problematic" id="id6">|</span></a>Couchbase|✔     | ✔    | ✔      |        | ✔✔       | Hor  | ✔ | ✔ | C++  | 2010 |</p>
+<p># Product selection and evaluation
+For the purpose of evaluation we have selected Solr, Elasticsearch, Oracle (Text) and Apache Ignite. The selected products were tested on a single VM on GCP (4 vCPUs + 15GB RAM) with 27 million records.</p>
+<dl class="docutils">
+<dt>## Solr</dt>
+<dd><ol class="first last arabic simple">
+<li>[Install SolrCloud](solr/install-solr-cloud/README.md)</li>
+<li>[Index RDBMS on Solr](solr/index-oracle-db/README.md)</li>
+<li>[Solr security](solr/security/README.md)</li>
+<li>[Solr performance](solr/performance/README.md)</li>
+<li>[Solr commands reference](solr/commands/README.md)</li>
+</ol>
+</dd>
+<dt>## Elasticsearch</dt>
+<dd><ol class="first last arabic simple">
+<li>[Install Elastic cluster](elastic/install-cluster/README.md)</li>
+<li>[Index RDBMS on Elastic](elastic/index-oracle-db/README.md)</li>
+<li>[Elastic security](elastic/security/README.md)</li>
+<li>[Elastic performance](elastic/performance/README.md)</li>
+<li>[Elastic commands reference](elastic/commands/README.md)</li>
+</ol>
+</dd>
+<dt>## Oracle (Text)</dt>
+<dd><ol class="first last arabic simple">
+<li>[Configure Oracle Text]  &lt;!–(oracle-text/configure-text/README.md)–&gt;</li>
+<li>[Create Text Index]  &lt;!–(oracle-text/index-oracle-db/README.md)–&gt;</li>
+<li>[Text security]  &lt;!–(oracle-text/security/README.md)–&gt;</li>
+<li>[Text performance]  &lt;!–(oracle-text/performance/README.md)–&gt;</li>
+<li>[Text commands reference]  &lt;!–(oracle-text/commands/README.md)–&gt;</li>
+</ol>
+</dd>
+<dt>## Apache Ignite</dt>
+<dd><ol class="first last arabic simple">
+<li>[Install Ignite]  &lt;!–(ignite/install-ignite/README.md)–&gt;</li>
+<li>[Load RDBMS to Ignite]  &lt;!–(ignite/index-oracle-db/README.md)–&gt;</li>
+<li>[Ignite security]  &lt;!–(ignite/security/README.md)–&gt;</li>
+<li>[Ignite performance]  &lt;!–(ignite/performance/README.md)–&gt;</li>
+<li>[Ignite commands reference]  &lt;!–(ignite/commands/README.md)–&gt;</li>
+</ol>
+</dd>
+</dl>
+<p># Decision analysis</p>
+<p><a href="#id39"><span class="problematic" id="id40">|Selection criteria|Weightage|Solr|Elasticsearch|Oracle(Text)|Ignite|</span></a>
+<a href="#id41"><span class="problematic" id="id42">|------------------|</span></a>———<a href="#id43"><span class="problematic" id="id44">|----|</span></a>————-<a href="#id45"><span class="problematic" id="id46">|------------|</span></a>——|
+<a href="#id47"><span class="problematic" id="id48">|Infrastructure implications||new VMs + SSD|new VMs + SSD |existing DB |new VMs + SSD |
+|security (functional role) | |Calling App | Calling App | COMPOS join | Calling App|</span></a>
+<a href="#id49"><span class="problematic" id="id50">|security (data role)||</span></a> Query filter | Query filter| Query filter | Query filter |
+<a href="#id51"><span class="problematic" id="id52">|Encryption (at rest) ||</span></a> | | | |
+<a href="#id53"><span class="problematic" id="id54">|Encryption (in motion) ||</span></a> | | | |
+<a href="#id55"><span class="problematic" id="id56">|functional fit across our repositories to index||</span></a> | | | |
+<a href="#id57"><span class="problematic" id="id58">|performance of queries | |2128 ms|</span></a> 600 ms| | |
+<a href="#id59"><span class="problematic" id="id60">|performance of complex queries||</span></a> | | | |
+<a href="#id61"><span class="problematic" id="id62">|pagination support||✔|✔ |✖ |✖ |
+|performance of load||~5000/s, 30 stored + 19 indexed fields|~4000/s (all fields analysed) | | |
+|maintainability ||</span></a> | | | |
+<a href="#id63"><span class="problematic" id="id64">|supportability||</span></a> | | | |
+<a href="#id65"><span class="problematic" id="id66">|product support||</span></a> ✔ (Lucid) | ✔ | ✔ | ✔ (GG)|
+<a href="#id67"><span class="problematic" id="id68">|knowledge community||</span></a> | | | |
+<a href="#id69"><span class="problematic" id="id70">|maturity ||</span></a> ✔ | ✔ | ✔ | ✔ (GG)|
+<a href="#id71"><span class="problematic" id="id72">|TCO||</span></a> | |  | |
+<a href="#id73"><span class="problematic" id="id74">|deployability in our environment||</span></a> ✔ | ✔ | ✔✔ | ✔ |
+<a href="#id75"><span class="problematic" id="id76">|source support-RDBMS||</span></a> ✔ | ✔ | ✔ | ✔ |
+<a href="#id77"><span class="problematic" id="id78">|source support-OID,LDAP||</span></a> | | | |
+<a href="#id79"><span class="problematic" id="id80">|source support-logs||</span></a> ✔ | ✔ <a href="#id81"><span class="problematic" id="id82">|SQL\*Loader | |
+|source support-CMS||</span></a> | | | |
+<a href="#id83"><span class="problematic" id="id84">|source support-files||</span></a> ✔ | ✔ | ✔ | ✔ |
+<a href="#id85"><span class="problematic" id="id86">|source support-JMS||</span></a> | | | |</p>
+<p># Product recommendation</p>
+<div class="section" id="content">
+<h2>Content<a class="headerlink" href="#content" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Suds Kumar.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>
