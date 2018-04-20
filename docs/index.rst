@@ -10,7 +10,7 @@ Content
 -------
 .. toctree::
     :maxdepth: 4
+	:titlesonly:
 
-    Real time search & analytics
+    search-analytics
     
-

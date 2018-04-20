@@ -5,7 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = ../../etl-with-airflow-docs
+BUILDDIR      = ../../faster-search-docs
 PDFBUILDDIR   = /tmp
 PDF           = ../manual.pdf
 
