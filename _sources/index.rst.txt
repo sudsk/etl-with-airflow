@@ -1,7 +1,7 @@
 Digital Data Engineering Handbook 0.1
 ==================================================
 
-.. Introduction::
+.. important::
 
     What you will find here are data engineering principles, design patterns,
     data pipeline principles and interesting usage examples.
@@ -10,7 +10,6 @@ Content
 -------
 .. toctree::
     :maxdepth: 4
-	:titlesonly:
 
     search-analytics
     
