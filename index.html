@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Faster Search and Analytics &mdash; Real Time Search and Analytics</title>
+  <title>Digital Data Engineering Handbook 0.1 &mdash; Real Time Search and Analytics</title>
   
 
   
@@ -80,14 +80,7 @@
             
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Faster Search and Analytics</a><ul>
-<li><a class="reference internal" href="#introduction">Introduction</a></li>
-<li><a class="reference internal" href="#proposed-architecture">Proposed architecture</a></li>
-<li><a class="reference internal" href="#initial-selection">Initial selection</a></li>
-<li><a class="reference internal" href="#product-selection-and-evaluation">Product selection and evaluation</a></li>
-<li><a class="reference internal" href="#solr">Solr</a></li>
-<li><a class="reference internal" href="#elasticsearch">Elasticsearch</a></li>
-<li><a class="reference internal" href="#oracle-text">Oracle (Text)</a></li>
+<li><a class="reference internal" href="#">Digital Data Engineering Handbook 0.1</a><ul>
 <li><a class="reference internal" href="#content">Content</a></li>
 </ul>
 </li>
@@ -140,7 +133,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>Faster Search and Analytics</li>
+      <li>Digital Data Engineering Handbook 0.1</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -157,105 +150,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="faster-search-and-analytics">
-<h1>Faster Search and Analytics<a class="headerlink" href="#faster-search-and-analytics" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>This repository describes the search for a high-performance-search-analytics product which can sit between a traditional RDBMS or hadoop filesystem and application, and provide under 100ms query performance, search capability, handle large volumes, analytics, high availability etc.</p>
-</div>
-<div class="section" id="proposed-architecture">
-<h2>Proposed architecture<a class="headerlink" href="#proposed-architecture" title="Permalink to this headline">¶</a></h2>
-<p>This picture depicts where the product would sit within our existing architecture and interactions with other components:</p>
-<p>![Integral Layer](images/integral.png)</p>
-</div>
-<div class="section" id="initial-selection">
-<h2>Initial selection<a class="headerlink" href="#initial-selection" title="Permalink to this headline">¶</a></h2>
-<p>With what we are after it’s unlikely a single product can satisfy all requirements, so it’s likely there will be trade-offs therefore we have widen the scope to include a variety of data technologies. Though I must mention with plethora of products available (see below) doing an initial selection was not easy.</p>
-<p>![Data Platforms](images/DataPlatforms.png)</p>
-<p>Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it.</p>
-</div>
-<div class="section" id="product-selection-and-evaluation">
-<h2>Product selection and evaluation<a class="headerlink" href="#product-selection-and-evaluation" title="Permalink to this headline">¶</a></h2>
-<p>For the purpose of evaluation we have selected Solr, Elasticsearch, Oracle (Text) and Apache Ignite. The selected products were tested on a single VM on GCP (4 vCPUs + 15GB RAM) with 27 million records.</p>
-</div>
-<div class="section" id="solr">
-<h2>Solr<a class="headerlink" href="#solr" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ol class="arabic simple">
-<li>[Install SolrCloud](solr/install-solr-cloud/README.md)</li>
-<li>[Index RDBMS on Solr](solr/index-oracle-db/README.md)</li>
-<li>[Solr security](solr/security/README.md)</li>
-<li>[Solr performance](solr/performance/README.md)</li>
-<li>[Solr commands reference](solr/commands/README.md)</li>
-</ol>
-</div></blockquote>
-</div>
-<div class="section" id="elasticsearch">
-<h2>Elasticsearch<a class="headerlink" href="#elasticsearch" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ol class="arabic simple">
-<li>[Install Elastic cluster](elastic/install-cluster/README.md)</li>
-<li>[Index RDBMS on Elastic](elastic/index-oracle-db/README.md)</li>
-<li>[Elastic security](elastic/security/README.md)</li>
-<li>[Elastic performance](elastic/performance/README.md)</li>
-<li>[Elastic commands reference](elastic/commands/README.md)</li>
-</ol>
-</div></blockquote>
-</div>
-<div class="section" id="oracle-text">
-<h2>Oracle (Text)<a class="headerlink" href="#oracle-text" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ol class="arabic simple">
-<li>[Configure Oracle Text]  &lt;!–(oracle-text/configure-text/README.md)–&gt;</li>
-<li>[Create Text Index]  &lt;!–(oracle-text/index-oracle-db/README.md)–&gt;</li>
-<li>[Text security]  &lt;!–(oracle-text/security/README.md)–&gt;</li>
-<li>[Text performance]  &lt;!–(oracle-text/performance/README.md)–&gt;</li>
-<li>[Text commands reference]  &lt;!–(oracle-text/commands/README.md)–&gt;</li>
-</ol>
-</div></blockquote>
-<dl class="docutils">
-<dt>## Apache Ignite</dt>
-<dd><ol class="first last arabic simple">
-<li>[Install Ignite]  &lt;!–(ignite/install-ignite/README.md)–&gt;</li>
-<li>[Load RDBMS to Ignite]  &lt;!–(ignite/index-oracle-db/README.md)–&gt;</li>
-<li>[Ignite security]  &lt;!–(ignite/security/README.md)–&gt;</li>
-<li>[Ignite performance]  &lt;!–(ignite/performance/README.md)–&gt;</li>
-<li>[Ignite commands reference]  &lt;!–(ignite/commands/README.md)–&gt;</li>
-</ol>
-</dd>
-</dl>
-<p># Decision analysis</p>
-<p><a href="#id1"><span class="problematic" id="id2">|Selection criteria|Weightage|Solr|Elasticsearch|Oracle(Text)|Ignite|</span></a>
-<a href="#id3"><span class="problematic" id="id4">|------------------|</span></a>———<a href="#id5"><span class="problematic" id="id6">|----|</span></a>————-<a href="#id7"><span class="problematic" id="id8">|------------|</span></a>——|
-<a href="#id9"><span class="problematic" id="id10">|Infrastructure implications||new VMs + SSD|new VMs + SSD |existing DB |new VMs + SSD |
-|security (functional role) | |Calling App | Calling App | COMPOS join | Calling App|</span></a>
-<a href="#id11"><span class="problematic" id="id12">|security (data role)||</span></a> Query filter | Query filter| Query filter | Query filter |
-<a href="#id13"><span class="problematic" id="id14">|Encryption (at rest) ||</span></a> | | | |
-<a href="#id15"><span class="problematic" id="id16">|Encryption (in motion) ||</span></a> | | | |
-<a href="#id17"><span class="problematic" id="id18">|functional fit across our repositories to index||</span></a> | | | |
-<a href="#id19"><span class="problematic" id="id20">|performance of queries | |2128 ms|</span></a> 600 ms| | |
-<a href="#id21"><span class="problematic" id="id22">|performance of complex queries||</span></a> | | | |
-<a href="#id23"><span class="problematic" id="id24">|pagination support||✔|✔ |✖ |✖ |
-|performance of load||~5000/s, 30 stored + 19 indexed fields|~4000/s (all fields analysed) | | |
-|maintainability ||</span></a> | | | |
-<a href="#id25"><span class="problematic" id="id26">|supportability||</span></a> | | | |
-<a href="#id27"><span class="problematic" id="id28">|product support||</span></a> ✔ (Lucid) | ✔ | ✔ | ✔ (GG)|
-<a href="#id29"><span class="problematic" id="id30">|knowledge community||</span></a> | | | |
-<a href="#id31"><span class="problematic" id="id32">|maturity ||</span></a> ✔ | ✔ | ✔ | ✔ (GG)|
-<a href="#id33"><span class="problematic" id="id34">|TCO||</span></a> | |  | |
-<a href="#id35"><span class="problematic" id="id36">|deployability in our environment||</span></a> ✔ | ✔ | ✔✔ | ✔ |
-<a href="#id37"><span class="problematic" id="id38">|source support-RDBMS||</span></a> ✔ | ✔ | ✔ | ✔ |
-<a href="#id39"><span class="problematic" id="id40">|source support-OID,LDAP||</span></a> | | | |
-<a href="#id41"><span class="problematic" id="id42">|source support-logs||</span></a> ✔ | ✔ <a href="#id43"><span class="problematic" id="id44">|SQL\*Loader | |
-|source support-CMS||</span></a> | | | |
-<a href="#id45"><span class="problematic" id="id46">|source support-files||</span></a> ✔ | ✔ | ✔ | ✔ |
-<a href="#id47"><span class="problematic" id="id48">|source support-JMS||</span></a> | | | |</p>
-<p># Product recommendation</p>
-</div>
+  <div class="section" id="digital-data-engineering-handbook-0-1">
+<h1>Digital Data Engineering Handbook 0.1<a class="headerlink" href="#digital-data-engineering-handbook-0-1" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="content">
 <h2>Content<a class="headerlink" href="#content" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-</div>
 </div>
 </div>
 
