@@ -69,7 +69,8 @@ Solr
   
   5. [Solr commands reference](solr/commands/README.md)
  
-## Elasticsearch
+Elasticsearch
+-------------
   1. [Install Elastic cluster](elastic/install-cluster/README.md)
  
   2. [Index RDBMS on Elastic](elastic/index-oracle-db/README.md)
@@ -80,7 +81,8 @@ Solr
   
   5. [Elastic commands reference](elastic/commands/README.md)
 
-## Oracle (Text)
+Oracle (Text)
+-------------
   1. [Configure Oracle Text]  <!--(oracle-text/configure-text/README.md)-->
  
   2. [Create Text Index]  <!--(oracle-text/index-oracle-db/README.md)-->
