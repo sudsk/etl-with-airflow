@@ -1,4 +1,4 @@
-Digital Data Engineering Guidebook 0.1
+Digital Data Engineering Handbook 0.1
 ==================================================
 
 .. Introduction::
