@@ -212,19 +212,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <p>With what we are after it’s unlikely a single product can satisfy all requirements, so it’s likely there will be trade-offs therefore we have widen the scope to include a variety of data technologies. Though I must mention with plethora of products available (see below) doing an initial selection was not easy.</p>
 <img alt="img/DataPlatforms.png)" src="img/DataPlatforms.png)" />
 <p>Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="10%" />
-<col width="10%" />
-<col width="10%" />
-<col width="10%" />
-<col width="10%" />
-<col width="10%" />
-<col width="10%" />
-<col width="10%" />
-<col width="10%" />
-<col width="10%" />
-</colgroup>
+<table border="1" class="colwidths-auto docutils">
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Product</th>
 <th class="head">In-Memory</th>
@@ -265,12 +253,8 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>cache</td>
 <td>✔</td>
 <td>&#160;</td>
-<td><blockquote class="first last">
-<div>✔✔ Inverted</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>RAC</div></blockquote>
-</td>
+<td>Inverted</td>
+<td>RAC</td>
 <td><blockquote class="first last">
 <div>✖</div></blockquote>
 </td>
@@ -282,33 +266,19 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>✖</td>
 <td>✔</td>
 <td>&#160;</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>✔</td>
+<td>Hor</td>
+<td>✔</td>
+<td>✔</td>
 <td>C</td>
 <td>1996</td>
 </tr>
 <tr class="row-even"><td>MariaDB</td>
 <td>✖</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>✔</td>
 <td>&#160;</td>
-<td><blockquote class="first last">
-<div>✖</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
+<td>✖</td>
+<td>Hor</td>
 <td>✔</td>
 <td>✔</td>
 <td>C</td>
@@ -318,18 +288,10 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>✔</td>
 <td>✔</td>
 <td>✔</td>
-<td><blockquote class="first last">
-<div>✔ (beta)</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>beta</td>
+<td>Hor</td>
+<td>✔</td>
+<td>✔</td>
 <td>C++</td>
 <td>2013</td>
 </tr>
@@ -337,56 +299,34 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>✔ store</td>
 <td>&#160;</td>
 <td>✔</td>
-<td><blockquote class="first last">
-<div>✖</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>✖</td>
+<td>Hor</td>
+<td>✔</td>
 <td>✔</td>
 <td>&#160;</td>
 <td>2000</td>
 </tr>
 <tr class="row-odd"><td>Vertica</td>
 <td>✖</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
 <td>✔</td>
-<td><blockquote class="first last">
-<div>✖</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>✔</td>
+<td>✖</td>
+<td>Hor</td>
+<td>✔</td>
 <td>✔</td>
 <td>&#160;</td>
 <td>2005</td>
 </tr>
 <tr class="row-even"><td>VoltDB</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td>✖</td>
-<td><blockquote class="first last">
-<div>✖</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
 <td>✔</td>
 <td><blockquote class="first last">
 <div>✔</div></blockquote>
 </td>
+<td>✖</td>
+<td>✖</td>
+<td>Hor</td>
+<td>✔</td>
+<td>✔</td>
 <td>Java</td>
 <td>2010</td>
 </tr>
@@ -394,80 +334,44 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>✖</td>
 <td>✔</td>
 <td>&#160;</td>
-<td><blockquote class="first last">
-<div>✖</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
+<td>✖</td>
+<td>Hor</td>
 <td>✔</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>Java</div></blockquote>
-</td>
+<td>✔</td>
+<td>Java</td>
 <td>2008</td>
 </tr>
 <tr class="row-even"><td>Couchbase</td>
 <td>✔</td>
 <td>✔</td>
 <td>&#160;</td>
-<td><blockquote class="first last">
-<div>✔✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>C++</div></blockquote>
-</td>
+<td>✔✔</td>
+<td>Hor</td>
+<td>✔</td>
+<td>✔</td>
+<td>C++</td>
 <td>2010</td>
 </tr>
 <tr class="row-odd"><td>MongoDB</td>
-<td><blockquote class="first last">
-<div>✔ store</div></blockquote>
-</td>
+<td>✔ store</td>
 <td>✔</td>
 <td>&#160;</td>
+<td>✔</td>
+<td>Hor</td>
 <td><blockquote class="first last">
 <div>✔</div></blockquote>
 </td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>C++</div></blockquote>
-</td>
+<td>✔</td>
+<td>C++</td>
 <td>2009</td>
 </tr>
 <tr class="row-even"><td>Ignite(GG)</td>
-<td><blockquote class="first last">
-<div>✔ store</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>✔ store</td>
+<td>✔</td>
 <td>&#160;</td>
 <td>Lucene</td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>Hor</td>
+<td>✔</td>
 <td>✔</td>
 <td>Java</td>
 <td><blockquote class="first last">
@@ -479,18 +383,10 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>✔</td>
 <td>&#160;</td>
 <td>Lucene</td>
-<td><blockquote class="first last">
-<div>Hor</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>Java</div></blockquote>
-</td>
+<td>Hor</td>
+<td>✔</td>
+<td>✔</td>
+<td>Java</td>
 <td>2000</td>
 </tr>
 <tr class="row-even"><td>Coherence</td>
@@ -501,13 +397,9 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>&#160;</td>
 <td>&#160;</td>
 <td>Hor</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
 <td>✔</td>
-<td><blockquote class="first last">
-<div>Java</div></blockquote>
-</td>
+<td>✔</td>
+<td>Java</td>
 <td>2005</td>
 </tr>
 </tbody>
