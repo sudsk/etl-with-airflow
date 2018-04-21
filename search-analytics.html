@@ -215,15 +215,15 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <table border="1" class="colwidths-auto docutils">
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Product</th>
-<th class="head">In-Memory</th>
+<th class="head">Memory</th>
 <th class="head">Disk</th>
-<th class="head">Columnar</th>
-<th class="head">Text Search</th>
-<th class="head">Scales</th>
+<th class="head">cStore</th>
+<th class="head">Search</th>
+<th class="head">Scale</th>
 <th class="head">HA</th>
 <th class="head">XDCR</th>
-<th class="head">Lang.</th>
-<th class="head">Release</th>
+<th class="head">Lang</th>
+<th class="head">Rel</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -250,14 +250,12 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>2004</td>
 </tr>
 <tr class="row-even"><td>Oracle</td>
-<td>cache</td>
 <td>✔</td>
-<td>&#160;</td>
+<td>✔</td>
+<td>✔</td>
 <td>Inverted</td>
 <td>RAC</td>
-<td><blockquote class="first last">
-<div>✖</div></blockquote>
-</td>
+<td>✖</td>
 <td>✔</td>
 <td>C</td>
 <td>1997</td>
@@ -265,7 +263,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <tr class="row-odd"><td>PG CitusDB</td>
 <td>✖</td>
 <td>✔</td>
-<td>&#160;</td>
+<td>✔</td>
 <td>✔</td>
 <td>Hor</td>
 <td>✔</td>
@@ -276,7 +274,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <tr class="row-even"><td>MariaDB</td>
 <td>✖</td>
 <td>✔</td>
-<td>&#160;</td>
+<td>✔</td>
 <td>✖</td>
 <td>Hor</td>
 <td>✔</td>
@@ -374,9 +372,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>✔</td>
 <td>✔</td>
 <td>Java</td>
-<td><blockquote class="first last">
-<div>2007</div></blockquote>
-</td>
+<td>2007</td>
 </tr>
 <tr class="row-odd"><td>GigaSpaces</td>
 <td>✔</td>
