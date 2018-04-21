@@ -11,8 +11,8 @@ Content
 .. toctree::
     :maxdepth: 1
 
-    search-analytics
-	data-pipelines
-	reconciliation
+    search-analytics.rst
+    data-pipelines.rst
+    reconciliation.rst
 	
     
