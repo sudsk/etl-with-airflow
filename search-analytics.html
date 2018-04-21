@@ -208,7 +208,62 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <h2>Initial selection<a class="headerlink" href="#initial-selection" title="Permalink to this headline">¶</a></h2>
 <p>With what we are after it’s unlikely a single product can satisfy all requirements, so it’s likely there will be trade-offs therefore we have widen the scope to include a variety of data technologies. Though I must mention with plethora of products available (see below) doing an initial selection was not easy.</p>
 <img alt="img/DataPlatforms.png)" src="img/DataPlatforms.png)" />
-<p>Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it.</p>
+<p>Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it:</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="5%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Product</th>
+<th class="head">In-Memory</th>
+<th class="head">Disk</th>
+<th class="head">Sec Index</th>
+<th class="head">Columnar</th>
+<th class="head">Text Search</th>
+<th class="head">Scales</th>
+<th class="head">HA</th>
+<th class="head">XDCR</th>
+<th class="head">Lang.</th>
+<th class="head">Release</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Solr</td>
+<td>✖ MMapFS</td>
+<td><blockquote class="first last">
+<div>✔</div></blockquote>
+</td>
+<td><blockquote class="first last">
+<div>✔</div></blockquote>
+</td>
+<td>&#160;</td>
+<td><blockquote class="first last">
+<div>✔✔✔ Lucene</div></blockquote>
+</td>
+<td><blockquote class="first last">
+<div>Hor</div></blockquote>
+</td>
+<td>✔</td>
+<td>✔</td>
+<td><blockquote class="first last">
+<div>Java</div></blockquote>
+</td>
+<td><blockquote class="first last">
+<div>2004</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="product-selection-and-evaluation">
 <h2>Product selection and evaluation<a class="headerlink" href="#product-selection-and-evaluation" title="Permalink to this headline">¶</a></h2>
@@ -224,9 +279,9 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 </div>
 <div class="section" id="data-role-filter">
 <h2>Data role filter<a class="headerlink" href="#data-role-filter" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>How to enforce data role filter to searches on the ‘fast search’ product? There are various ways to do this and it ties up with the choice of tool:</dt>
-<dd><ol class="first last arabic simple">
+<p>How to enforce data role filter to searches on the ‘fast search’ product? There are various ways to do this and it ties up with the choice of tool:</p>
+<blockquote>
+<div><ol class="arabic simple">
 <li>Relational Joins - If the data role filter and the transaction data stores are on the same database, then a join would be most appropriate in this case.
 - Oracle 12c In-Memory
 - MemSQL</li>
@@ -237,8 +292,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <li>Terms Lookup mechanism - Instead of specifying a filter with a lot of values it can be beneficial to fetch those values from a document in another index.
 - Elasticsearch</li>
 </ol>
-</dd>
-</dl>
+</div></blockquote>
 </div>
 <div class="section" id="decision-analysis">
 <h2>Decision analysis<a class="headerlink" href="#decision-analysis" title="Permalink to this headline">¶</a></h2>

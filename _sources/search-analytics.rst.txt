@@ -35,12 +35,15 @@ With what we are after it's unlikely a single product can satisfy all requiremen
 .. image:: img/DataPlatforms.png)
 
 
-Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it.
+Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it:
 
-+-------+---------+-----+----------+--------+-----------+------+--+----+------+-------+
-|Product|In-Memory|Disk |Sec Index |Columnar|Text Search|Scales|HA|XDCR| Lang.|Release|
-+=======+=========+=====+==========+========+===========+======+==+====+======+=======+
-|Solr   |✖ MMapFS | ✔  | ✔       |        | ✔✔✔ Lucene| Hor |✔  |✔  | Java | 2004 |  
+.. csv-table:: 
+   :header: "Product","In-Memory","Disk","Sec Index","Columnar","Text Search","Scales","HA","XDCR","Lang.","Release"
+   :widths: 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 10
+
+   "Solr ","✖ MMapFS "," ✔  "," ✔       ","        "," ✔✔✔ Lucene"," Hor ","✔  ","✔  "," Java "," 2004 "
+
+   
 +-------+----------+----+----------+--------+------------+-----+---+----+------+------+
 |Elastic| ✖ MMapFS| ✔   | ✔       |        | ✔✔✔ Lucene| Hor |✔  | ✔ | Java | 2004 |  
 +-------+----------+----+----------+--------+------------+-----+---+----+------+------+
@@ -88,7 +91,9 @@ The selected products were tested on a single VM on GCP (4 vCPUs + 15GB RAM) wit
 
 Data role filter
 --------------------------------------------------------------------------
+
 How to enforce data role filter to searches on the 'fast search' product? There are various ways to do this and it ties up with the choice of tool:
+
  1. Relational Joins - If the data role filter and the transaction data stores are on the same database, then a join would be most appropriate in this case. 
     - Oracle 12c In-Memory
     - MemSQL
