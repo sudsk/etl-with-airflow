@@ -39,7 +39,7 @@ Initial selection was based on product literature, white-papers, product specifi
 
 .. csv-table:: 
    :header: "Product","In-Memory","Disk","Sec Index","Columnar","Text Search","Scales","HA","XDCR","Lang.","Release"
-   :widths: 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10
+   :widths: 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
 
    "Solr","MMapFS","✔","✔"," ","Lucene","Hor","✔","✔","Java","2004"
    "Elastic","MMapFS","✔","✔"," ","Lucene","Hor","✔","✔","Java","2004"
