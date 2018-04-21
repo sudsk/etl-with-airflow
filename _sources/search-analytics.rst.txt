@@ -3,13 +3,6 @@ Real time search and analytics
 
 This section describes the search for a high performance search analytics product which can sit between a foundation layer (RDBMS,  filesystem) and application, and provide fast query performance, search capability, handle large volumes, fast ingestion, analytics, high availability etc.
 
-.. important::
-
-    The webserver, scheduler and worker all run exactly the same software, but are started with different commands.
-
-.. image:: img/testing.jpg
-
-
 Use Cases
 ----------
 * **MBD - DSPMBD-5030**
@@ -116,84 +109,93 @@ Decision analysis
 Review and recommendation
 -------------------------
 
-## Sorting
-- Sorting (order by) is the biggest blocker for sub-second performance for pagination queries
-- User should apply filter to reduce the number of rows to 100K ideally or 1M max. (There is no way user is going to paginate through all the pages. Download is not real-time, need not be sorted, etc.) 
-- User can be shown the count and asked to apply more filter or reduce date range to bring it under the MAX allowed value.
-- Or the application take the interim count and reduce the date range - assuming sorting is always and only on date transaction/processing column. 
+Sorting
+^^^^^^^^^^
+* Sorting (order by) is the biggest blocker for sub-second performance for pagination queries
+* Apply filter to reduce the number of rows to 100K ideally or 1M max. (There is no way user is going to paginate through all the pages. Download is not real-time, need not be sorted, etc.) 
+* User can be shown the count and asked to apply more filter or reduce date range to bring it under the MAX allowed value.
+* Or the application take the interim count and reduce the date range - assuming sorting is always and only on date transaction/processing column. 
 
-## Coherence IMDG 
-- Already using Coherence for WPOS session tokens
-- Next plan is to extend usage with Master data caching such as merchant and user details for WPOS
-- We put Coherence to test by adding further use cases with increasing complexity
-- Build our experience on IMDGs in terms of replication & partitioned caches, on-heap & off-heap memory, correct GC, managing several nodes, managing XDCR, nodes rebalancing, collocated and non-collocated queries, synchronisation, goldengate integration, etc.
-- Going with other IMDGs - GG/Ignite, Hazlecast, JBoss Infinispan, Gigaspaces XAP - and storing and managing billions of rows at this moment is too risky, but we shouldn't rule out for future based on our Coherence extension experience. 
+Coherence IMDG 
+^^^^^^^^^^^^^^^
+* Already using Coherence for WPOS session tokens
+* Next plan is to extend usage with Master data caching such as merchant and user details for WPOS
+* We put Coherence to test by adding further use cases with increasing complexity
+* Build our experience on IMDGs in terms of replication & partitioned caches, on-heap & off-heap memory, correct GC, managing several nodes, managing XDCR, nodes rebalancing, collocated and non-collocated queries, synchronisation, goldengate integration, etc.
+* Going with other IMDGs - GG/Ignite, Hazlecast, JBoss Infinispan, Gigaspaces XAP - and storing and managing billions of rows at this moment is too risky, but we shouldn't rule out for future based on our Coherence extension experience. 
 
-## Oracle 12c In-Memory
-- We don't have In-Memory license
-- In-memory performance was very good except when the range of input rows is huge (>100M) to sort (order by)
-- In-memory columnstore is not first class citizen unlike other memory products where the data moves through memory to persistence layer. Oracle In-memory columnstore is seeded from disk. 
+Oracle 12c In-Memory
+^^^^^^^^^^^^^^^^^^^^^
+* We don't have In-Memory license
+* In-memory performance was very good except when the range of input rows is huge (>100M) to sort (order by)
+* In-memory columnstore is not first class citizen unlike other memory products where the data moves through memory to persistence layer. Oracle In-memory columnstore is seeded from disk. 
 
-## MemSQL
-- Good performance for billion of rows (MemSQL did a PoC with 26B rows)
-- Very fast ingestion speed (> 100k/s)
-- Commercial license is memory based - $20k for 128GB RAM
-- Data is stored ordered by index key. Reversing the order of index keys sort order results in very poor performance as it cannot use fast OrderedColumnstoreScan anymore. 
-- Queries which are not able to fan out to all nodes affects performance. (This should be seen with more testing to compare concurrent users using only one shard compared to concurrent fan-out queries using all shards - this could balance out itself.)
-- Columnstore is built for sequential access, therefore random access on event-id has to be measured. 
-- It's very likely that Corporate and SMEs will have different table design strategies. Performance issues can be seen for border merchants - like small corporates using SME table and vice-versa.
-- Some query plan issues has been seen during PoC. Working with MemSQL on that.
-- Some disk space increased usage during ingestion seen during PoC. Working with MemSQL on that.
+MemSQL
+^^^^^^^
+* Good performance for billion of rows (MemSQL did a PoC with 26B rows)
+* Very fast ingestion speed (> 100k/s)
+* Commercial license is memory based - $20k for 128GB RAM
+* Data is stored ordered by index key. Reversing the order of index keys sort order results in very poor performance as it cannot use fast OrderedColumnstoreScan anymore. 
+* Queries which are not able to fan out to all nodes affects performance. (This should be seen with more testing to compare concurrent users using only one shard compared to concurrent fan-out queries using all shards - this could balance out itself.)
+* Columnstore is built for sequential access, therefore random access on event-id has to be measured. 
+* It's very likely that Corporate and SMEs will have different table design strategies. Performance issues can be seen for border merchants - like small corporates using SME table and vice-versa.
+* Some query plan issues has been seen during PoC. Working with MemSQL on that.
+* Some disk space increased usage during ingestion seen during PoC. Working with MemSQL on that.
 
-## Elasticsearch
-- Good tool of choice in non-relational space focussed on searches. 
-- Certain aggregations are approximate - such as count distinct and percentiles aggregation. (therefore all aggregations output should be verified for reliability.)
-- Aggregation performance should be evaluated.
-- SQL query support coming soon - though applications doesn't need it. Current query DSL is more than enough. 
-- Terms filter with join to another index to be evaluated for data role filter.
-- Elastic support license cost?
+Elasticsearch
+^^^^^^^^^^^^^^^
+* Good tool of choice in non-relational space focussed on searches. 
+* Certain aggregations are approximate - such as count distinct and percentiles aggregation. (therefore all aggregations output should be verified for reliability.)
+* Aggregation performance should be evaluated.
+* SQL query support coming soon - though applications doesn't need it. Current query DSL is more than enough. 
+* Terms filter with join to another index to be evaluated for data role filter.
+* Elastic support license cost?
 
-MemSQL vs Elasticsearch performance test results 
+Performance test results 
 -------------------------------------------------
-- 600M rows
-- 12000 outlets
-- 10 users with two having access to 5000 outlets, and a user each with access to 1000, 500, 100, 50, 10, 5, 2 and 1 outlet.
-- 2 VMs - with 8vCPUs and 20-30GB RAM
-- Both MemSQL and Elastic operating in cluster mode
-  - MemSQL - 1 aggregator nodes and 3 leaf (data) nodes
-  - Elastic - 2 nodes (master,data,ingestion) with 4 shards
-- Set of 11 queries with mix of pagination, aggregation and lookup by event-id
-- Each query ran twice for the same user (so consider buffer(hot)-disk(cold) and first time exceution plan creation, especially for MemSQL as it creates .so objects)
-- Elastic didn't used term lookup for data role filter, rather it used a simple range filter for outlets. 
+* MemSQL vs Elasticsearch 
+* 600M rows
+* 12000 outlets
+* 10 users with two having access to 5000 outlets, and a user each with access to 1000, 500, 100, 50, 10, 5, 2 and 1 outlet.
+* 2 VMs - with 8vCPUs and 20-30GB RAM
+* Both MemSQL and Elastic operating in cluster mode
+  * MemSQL - 1 aggregator nodes and 3 leaf (data) nodes
+  * Elastic - 2 nodes (master,data,ingestion) with 4 shards
+* Set of 11 queries with mix of pagination, aggregation and lookup by event-id
+* Each query ran twice for the same user (so consider buffer(hot)-disk(cold) and first time exceution plan creation, especially for MemSQL as it creates .so objects)
+* Elastic didn't used term lookup for data role filter, rather it used a simple range filter for outlets. 
 
-### Full test results
+Full test results
+^^^^^^^^^^^^^^^^^^^
 
-#### MemSQL
-![mem-jmeter-full](images/mem-jmeter-full.png)
+**MemSQL**
+.. image:: img/mem-jmeter-full.png
 
-#### Elastic
-![elastic-jmeter-full](images/elastic-jmeter-full.png)
+**Elastic**
+.. image:: img/elastic-jmeter-full.png)
 
-### SME test results (users with 1-10 outlets access)
+SME test results (users with 1-10 outlets access)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-#### MemSQL
-![mem-jmeter-sme-1-10-users](images/mem-jmeter-sme-1-10-users.png)
+**MemSQL**
+.. image:: img/mem-jmeter-sme-1-10-users.png
 
-#### Elastic
-![elastic-jmeter-sme-1-10-users](images/elastic-jmeter-sme-1-10-users.png)
+**Elastic**
+.. image:: img/elastic-jmeter-sme-1-10-users.png)
 
-### CORP test results (users with 50-5k outlets access)
+CORP test results (users with 50-5k outlets access)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-#### MemSQL
-![mem-jmeter-corp-50-5k-users](images/mem-jmeter-corp-50-5k-users.png)
+**MemSQL**
+.. image:: img/mem-jmeter-corp-50-5k-users.png
 
-#### Elastic
-![elastic-jmeter-corp-50-5k-users](images/elastic-jmeter-corp-50-5k-users.png)
+**Elastic**
+.. image:: img/elastic-jmeter-corp-50-5k-users.png
 
 
 Proposed Architecture Diagram
 ------------------------------
-![Recommendation](images/integral-final.png)
+.. image:: img/integral-final.png
 
 - Possible use of Spark based ETL (Spark streaming, Spark SQL, etc.)
 - Possible use of parquet file based Spark foundation data layer accessible through Spark SQL (shown as ? above)

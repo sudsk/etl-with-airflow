@@ -12,4 +12,7 @@ Content
     :maxdepth: 1
 
     search-analytics
+	data-pipelines
+	reconciliation
+	
     

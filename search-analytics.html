@@ -87,8 +87,20 @@
 <li class="toctree-l2"><a class="reference internal" href="#product-selection-and-evaluation">Product selection and evaluation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#data-role-filter">Data role filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#decision-analysis">Decision analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#review-and-recommendation">Review and recommendation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#memsql-vs-elasticsearch-performance-test-results">MemSQL vs Elasticsearch performance test results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#review-and-recommendation">Review and recommendation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sorting">Sorting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coherence-imdg">Coherence IMDG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Oracle 12c In-Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">MemSQL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Elasticsearch</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-test-results">Performance test results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#full-test-results">Full test results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sme-test-results-users-with-1-10-outlets-access">SME test results (users with 1-10 outlets access)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#corp-test-results-users-with-50-5k-outlets-access">CORP test results (users with 50-5k outlets access)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#proposed-architecture-diagram">Proposed Architecture Diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next steps</a></li>
 </ul>
@@ -162,11 +174,6 @@
   <div class="section" id="real-time-search-and-analytics">
 <h1>Real time search and analytics<a class="headerlink" href="#real-time-search-and-analytics" title="Permalink to this headline">¶</a></h1>
 <p>This section describes the search for a high performance search analytics product which can sit between a foundation layer (RDBMS,  filesystem) and application, and provide fast query performance, search capability, handle large volumes, fast ingestion, analytics, high availability etc.</p>
-<div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">The webserver, scheduler and worker all run exactly the same software, but are started with different commands.</p>
-</div>
-<img alt="img/testing.jpg" src="img/testing.jpg" />
 <div class="section" id="use-cases">
 <h2>Use Cases<a class="headerlink" href="#use-cases" title="Permalink to this headline">¶</a></h2>
 <ul>
@@ -239,72 +246,99 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 </div>
 <div class="section" id="review-and-recommendation">
 <h2>Review and recommendation<a class="headerlink" href="#review-and-recommendation" title="Permalink to this headline">¶</a></h2>
-<p>## Sorting
-- Sorting (order by) is the biggest blocker for sub-second performance for pagination queries
-- User should apply filter to reduce the number of rows to 100K ideally or 1M max. (There is no way user is going to paginate through all the pages. Download is not real-time, need not be sorted, etc.)
-- User can be shown the count and asked to apply more filter or reduce date range to bring it under the MAX allowed value.
-- Or the application take the interim count and reduce the date range - assuming sorting is always and only on date transaction/processing column.</p>
-<p>## Coherence IMDG
-- Already using Coherence for WPOS session tokens
-- Next plan is to extend usage with Master data caching such as merchant and user details for WPOS
-- We put Coherence to test by adding further use cases with increasing complexity
-- Build our experience on IMDGs in terms of replication &amp; partitioned caches, on-heap &amp; off-heap memory, correct GC, managing several nodes, managing XDCR, nodes rebalancing, collocated and non-collocated queries, synchronisation, goldengate integration, etc.
-- Going with other IMDGs - GG/Ignite, Hazlecast, JBoss Infinispan, Gigaspaces XAP - and storing and managing billions of rows at this moment is too risky, but we shouldn’t rule out for future based on our Coherence extension experience.</p>
-<p>## Oracle 12c In-Memory
-- We don’t have In-Memory license
-- In-memory performance was very good except when the range of input rows is huge (&gt;100M) to sort (order by)
-- In-memory columnstore is not first class citizen unlike other memory products where the data moves through memory to persistence layer. Oracle In-memory columnstore is seeded from disk.</p>
-<p>## MemSQL
-- Good performance for billion of rows (MemSQL did a PoC with 26B rows)
-- Very fast ingestion speed (&gt; 100k/s)
-- Commercial license is memory based - $20k for 128GB RAM
-- Data is stored ordered by index key. Reversing the order of index keys sort order results in very poor performance as it cannot use fast OrderedColumnstoreScan anymore.
-- Queries which are not able to fan out to all nodes affects performance. (This should be seen with more testing to compare concurrent users using only one shard compared to concurrent fan-out queries using all shards - this could balance out itself.)
-- Columnstore is built for sequential access, therefore random access on event-id has to be measured.
-- It’s very likely that Corporate and SMEs will have different table design strategies. Performance issues can be seen for border merchants - like small corporates using SME table and vice-versa.
-- Some query plan issues has been seen during PoC. Working with MemSQL on that.
-- Some disk space increased usage during ingestion seen during PoC. Working with MemSQL on that.</p>
-<p>## Elasticsearch
-- Good tool of choice in non-relational space focussed on searches.
-- Certain aggregations are approximate - such as count distinct and percentiles aggregation. (therefore all aggregations output should be verified for reliability.)
-- Aggregation performance should be evaluated.
-- SQL query support coming soon - though applications doesn’t need it. Current query DSL is more than enough.
-- Terms filter with join to another index to be evaluated for data role filter.
-- Elastic support license cost?</p>
-</div>
-<div class="section" id="memsql-vs-elasticsearch-performance-test-results">
-<h2>MemSQL vs Elasticsearch performance test results<a class="headerlink" href="#memsql-vs-elasticsearch-performance-test-results" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sorting">
+<h3>Sorting<a class="headerlink" href="#sorting" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
+<li>Sorting (order by) is the biggest blocker for sub-second performance for pagination queries</li>
+<li>Apply filter to reduce the number of rows to 100K ideally or 1M max. (There is no way user is going to paginate through all the pages. Download is not real-time, need not be sorted, etc.)</li>
+<li>User can be shown the count and asked to apply more filter or reduce date range to bring it under the MAX allowed value.</li>
+<li>Or the application take the interim count and reduce the date range - assuming sorting is always and only on date transaction/processing column.</li>
+</ul>
+</div>
+<div class="section" id="coherence-imdg">
+<h3>Coherence IMDG<a class="headerlink" href="#coherence-imdg" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Already using Coherence for WPOS session tokens</li>
+<li>Next plan is to extend usage with Master data caching such as merchant and user details for WPOS</li>
+<li>We put Coherence to test by adding further use cases with increasing complexity</li>
+<li>Build our experience on IMDGs in terms of replication &amp; partitioned caches, on-heap &amp; off-heap memory, correct GC, managing several nodes, managing XDCR, nodes rebalancing, collocated and non-collocated queries, synchronisation, goldengate integration, etc.</li>
+<li>Going with other IMDGs - GG/Ignite, Hazlecast, JBoss Infinispan, Gigaspaces XAP - and storing and managing billions of rows at this moment is too risky, but we shouldn’t rule out for future based on our Coherence extension experience.</li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h3>Oracle 12c In-Memory<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>We don’t have In-Memory license</li>
+<li>In-memory performance was very good except when the range of input rows is huge (&gt;100M) to sort (order by)</li>
+<li>In-memory columnstore is not first class citizen unlike other memory products where the data moves through memory to persistence layer. Oracle In-memory columnstore is seeded from disk.</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h3>MemSQL<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Good performance for billion of rows (MemSQL did a PoC with 26B rows)</li>
+<li>Very fast ingestion speed (&gt; 100k/s)</li>
+<li>Commercial license is memory based - $20k for 128GB RAM</li>
+<li>Data is stored ordered by index key. Reversing the order of index keys sort order results in very poor performance as it cannot use fast OrderedColumnstoreScan anymore.</li>
+<li>Queries which are not able to fan out to all nodes affects performance. (This should be seen with more testing to compare concurrent users using only one shard compared to concurrent fan-out queries using all shards - this could balance out itself.)</li>
+<li>Columnstore is built for sequential access, therefore random access on event-id has to be measured.</li>
+<li>It’s very likely that Corporate and SMEs will have different table design strategies. Performance issues can be seen for border merchants - like small corporates using SME table and vice-versa.</li>
+<li>Some query plan issues has been seen during PoC. Working with MemSQL on that.</li>
+<li>Some disk space increased usage during ingestion seen during PoC. Working with MemSQL on that.</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>Elasticsearch<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Good tool of choice in non-relational space focussed on searches.</li>
+<li>Certain aggregations are approximate - such as count distinct and percentiles aggregation. (therefore all aggregations output should be verified for reliability.)</li>
+<li>Aggregation performance should be evaluated.</li>
+<li>SQL query support coming soon - though applications doesn’t need it. Current query DSL is more than enough.</li>
+<li>Terms filter with join to another index to be evaluated for data role filter.</li>
+<li>Elastic support license cost?</li>
+</ul>
+</div>
+</div>
+<div class="section" id="performance-test-results">
+<h2>Performance test results<a class="headerlink" href="#performance-test-results" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>MemSQL vs Elasticsearch</li>
 <li>600M rows</li>
 <li>12000 outlets</li>
 <li>10 users with two having access to 5000 outlets, and a user each with access to 1000, 500, 100, 50, 10, 5, 2 and 1 outlet.</li>
 <li>2 VMs - with 8vCPUs and 20-30GB RAM</li>
 <li>Both MemSQL and Elastic operating in cluster mode
-- MemSQL - 1 aggregator nodes and 3 leaf (data) nodes
-- Elastic - 2 nodes (master,data,ingestion) with 4 shards</li>
+* MemSQL - 1 aggregator nodes and 3 leaf (data) nodes
+* Elastic - 2 nodes (master,data,ingestion) with 4 shards</li>
 <li>Set of 11 queries with mix of pagination, aggregation and lookup by event-id</li>
 <li>Each query ran twice for the same user (so consider buffer(hot)-disk(cold) and first time exceution plan creation, especially for MemSQL as it creates .so objects)</li>
 <li>Elastic didn’t used term lookup for data role filter, rather it used a simple range filter for outlets.</li>
 </ul>
-<p>### Full test results</p>
-<p>#### MemSQL
-![mem-jmeter-full](images/mem-jmeter-full.png)</p>
-<p>#### Elastic
-![elastic-jmeter-full](images/elastic-jmeter-full.png)</p>
-<p>### SME test results (users with 1-10 outlets access)</p>
-<p>#### MemSQL
-![mem-jmeter-sme-1-10-users](images/mem-jmeter-sme-1-10-users.png)</p>
-<p>#### Elastic
-![elastic-jmeter-sme-1-10-users](images/elastic-jmeter-sme-1-10-users.png)</p>
-<p>### CORP test results (users with 50-5k outlets access)</p>
-<p>#### MemSQL
-![mem-jmeter-corp-50-5k-users](images/mem-jmeter-corp-50-5k-users.png)</p>
-<p>#### Elastic
-![elastic-jmeter-corp-50-5k-users](images/elastic-jmeter-corp-50-5k-users.png)</p>
+<div class="section" id="full-test-results">
+<h3>Full test results<a class="headerlink" href="#full-test-results" title="Permalink to this headline">¶</a></h3>
+<p><strong>MemSQL</strong>
+.. image:: img/mem-jmeter-full.png</p>
+<p><strong>Elastic</strong>
+.. image:: img/elastic-jmeter-full.png)</p>
+</div>
+<div class="section" id="sme-test-results-users-with-1-10-outlets-access">
+<h3>SME test results (users with 1-10 outlets access)<a class="headerlink" href="#sme-test-results-users-with-1-10-outlets-access" title="Permalink to this headline">¶</a></h3>
+<p><strong>MemSQL</strong>
+.. image:: img/mem-jmeter-sme-1-10-users.png</p>
+<p><strong>Elastic</strong>
+.. image:: img/elastic-jmeter-sme-1-10-users.png)</p>
+</div>
+<div class="section" id="corp-test-results-users-with-50-5k-outlets-access">
+<h3>CORP test results (users with 50-5k outlets access)<a class="headerlink" href="#corp-test-results-users-with-50-5k-outlets-access" title="Permalink to this headline">¶</a></h3>
+<p><strong>MemSQL</strong>
+.. image:: img/mem-jmeter-corp-50-5k-users.png</p>
+<p><strong>Elastic</strong>
+.. image:: img/elastic-jmeter-corp-50-5k-users.png</p>
+</div>
 </div>
 <div class="section" id="proposed-architecture-diagram">
 <h2>Proposed Architecture Diagram<a class="headerlink" href="#proposed-architecture-diagram" title="Permalink to this headline">¶</a></h2>
-<p>![Recommendation](images/integral-final.png)</p>
+<img alt="img/integral-final.png" src="img/integral-final.png" />
 <ul class="simple">
 <li>Possible use of Spark based ETL (Spark streaming, Spark SQL, etc.)</li>
 <li>Possible use of parquet file based Spark foundation data layer accessible through Spark SQL (shown as ? above)</li>
