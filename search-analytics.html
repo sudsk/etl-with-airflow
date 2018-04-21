@@ -212,25 +212,23 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <p>With what we are after it’s unlikely a single product can satisfy all requirements, so it’s likely there will be trade-offs therefore we have widen the scope to include a variety of data technologies. Though I must mention with plethora of products available (see below) doing an initial selection was not easy.</p>
 <img alt="img/DataPlatforms.png)" src="img/DataPlatforms.png)" />
 <p>Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it:</p>
-<table border="1" class="colwidths-given docutils">
+<table border="1" class="docutils">
 <colgroup>
-<col width="9%" />
-<col width="9%" />
-<col width="9%" />
-<col width="9%" />
-<col width="9%" />
-<col width="9%" />
-<col width="9%" />
-<col width="9%" />
-<col width="9%" />
-<col width="9%" />
-<col width="9%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Product</th>
 <th class="head">In-Memory</th>
 <th class="head">Disk</th>
-<th class="head">Sec Index</th>
 <th class="head">Columnar</th>
 <th class="head">Text Search</th>
 <th class="head">Scales</th>
@@ -244,7 +242,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <tr class="row-even"><td>Solr</td>
 <td>MMapFS</td>
 <td>✔</td>
-<td>✔</td>
 <td>&#160;</td>
 <td>Lucene</td>
 <td>Hor</td>
@@ -255,7 +252,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 </tr>
 <tr class="row-odd"><td>Elastic</td>
 <td>MMapFS</td>
-<td>✔</td>
 <td>✔</td>
 <td>&#160;</td>
 <td>Lucene</td>
@@ -268,9 +264,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <tr class="row-even"><td>Oracle</td>
 <td>cache</td>
 <td>✔</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
 <td>&#160;</td>
 <td><blockquote class="first last">
 <div>✔✔ Inverted</div></blockquote>
@@ -287,7 +280,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 </tr>
 <tr class="row-odd"><td>PG CitusDB</td>
 <td>✖</td>
-<td>✔</td>
 <td>✔</td>
 <td>&#160;</td>
 <td><blockquote class="first last">
@@ -310,7 +302,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td><blockquote class="first last">
 <div>✔</div></blockquote>
 </td>
-<td>✔</td>
 <td>&#160;</td>
 <td><blockquote class="first last">
 <div>✖</div></blockquote>
@@ -326,7 +317,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <tr class="row-odd"><td>MemSQL</td>
 <td>✔</td>
 <td>✔</td>
-<td>&#160;</td>
 <td>✔</td>
 <td><blockquote class="first last">
 <div>✔ (beta)</div></blockquote>
@@ -347,7 +337,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>✔ store</td>
 <td>&#160;</td>
 <td>✔</td>
-<td>✔</td>
 <td><blockquote class="first last">
 <div>✖</div></blockquote>
 </td>
@@ -367,7 +356,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <div>✔</div></blockquote>
 </td>
 <td>✔</td>
-<td>✔</td>
 <td><blockquote class="first last">
 <div>✖</div></blockquote>
 </td>
@@ -382,9 +370,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td>2005</td>
 </tr>
 <tr class="row-even"><td>VoltDB</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
 <td><blockquote class="first last">
 <div>✔</div></blockquote>
 </td>
@@ -407,12 +392,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 </tr>
 <tr class="row-odd"><td>Cassandra</td>
 <td>✖</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✖</div></blockquote>
-</td>
+<td>✔</td>
 <td>&#160;</td>
 <td><blockquote class="first last">
 <div>✖</div></blockquote>
@@ -431,12 +411,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 </tr>
 <tr class="row-even"><td>Couchbase</td>
 <td>✔</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>✔</td>
 <td>&#160;</td>
 <td><blockquote class="first last">
 <div>✔✔</div></blockquote>
@@ -459,12 +434,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td><blockquote class="first last">
 <div>✔ store</div></blockquote>
 </td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>✔</td>
 <td>&#160;</td>
 <td><blockquote class="first last">
 <div>✔</div></blockquote>
@@ -490,9 +460,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td><blockquote class="first last">
 <div>✔</div></blockquote>
 </td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
 <td>&#160;</td>
 <td>Lucene</td>
 <td><blockquote class="first last">
@@ -509,12 +476,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 </tr>
 <tr class="row-odd"><td>GigaSpaces</td>
 <td>✔</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>✔</td>
 <td>&#160;</td>
 <td>Lucene</td>
 <td><blockquote class="first last">
@@ -535,12 +497,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <td><blockquote class="first last">
 <div>✔</div></blockquote>
 </td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
-<td><blockquote class="first last">
-<div>✔</div></blockquote>
-</td>
+<td>✔</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>Hor</td>
