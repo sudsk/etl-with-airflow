@@ -7,5 +7,46 @@ Reconciliation
     data pipeline principles and interesting usage examples.
 
 
+Master Data Reconciliation
+----------------------------
+
+Total Number of NAP Merchants -  Active, Closed, Suspended 
+              # MBD onboarded -
+
+
+Total Number of PAP Merchants -  Active, Closed, Suspended 
+              # MBD onboarded -
+
+
+Reference Data Reconciliation
+-------------------------------
+			   
+Transaction Data Reconciliation
+--------------------------------
+Load Date
+  NAP Count , MBD Foundation Count, ProcessID 
+  MBD - Onboarded Merchants 
+  MBD - non-onboarded Merchants 
+  MBD - Business Filters and Constraints - Representment, Corrects, PAN blank, Currency Blank
+
+
+REC_OWNER
+=========
+ETL_Source_Control (Exposed to NAP using ODI_WORK synonym)
+ETL_BATCH_ID | ETL_LOAD_DATE | INTERFACE_NAME | ROWCOUNT | CREATED_DATE | CREATED_BY  | LAST_UPDATED_DATE| LAST_UPDATED_BY
+10001 |(could be same ODI variable)| NAP IF403 CQPR| 1000000 | SYSDATE | ODI-<session-id>|||
+
+For Invoice 
+control file name, zip creation date, zip file name, NAP IF414 Invoices, number of files, 
+Token aware - But how does the ETL system know when an externally sourced data ﬁle has arrived and should begin its process? The ETL system must be able to recognize that the ﬁlehas appeared in the ﬁle system and execute automatically. This process is called token aware. Tokens are ﬁles created in the ﬁle system to trigger an ETL event. 
+Applications that are token aware can poll a directory (or database table) for the arrival of a token ﬁle (or a row). 
+
+control-m job -> alert incident to support team ->
+
+Priority in control-m (NAP has priority over PAP)
+
+
+
+
 	
     

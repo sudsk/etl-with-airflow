@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Reconciliation &mdash; Real Time Search and Analytics</title>
+  <title>Reconciliation &mdash; Data Engineering</title>
   
 
   
@@ -48,7 +48,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Digital Data Engineering Handbook 0.1
+            <a href="index.html" class="icon icon-home"> Data Engineering Handbook 0.1
           
 
           
@@ -80,9 +80,16 @@
             
             
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="search-analytics.html">Real time search and analytics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="principles.html">Data Engineering Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="search-analytics.html">Search and Insights</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-pipelines.html">Data Pipelines</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Reconciliation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reconciliation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#master-data-reconciliation">Master Data Reconciliation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reference-data-reconciliation">Reference Data Reconciliation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transaction-data-reconciliation">Transaction Data Reconciliation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#rec-owner">REC_OWNER</a></li>
 </ul>
 
             
@@ -101,7 +108,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Digital Data Engineering Handbook 0.1</a>
+          <a href="index.html">Data Engineering Handbook 0.1</a>
         
       </nav>
 
@@ -156,6 +163,40 @@
 <p class="last">What you will find here are data engineering principles, design patterns,
 data pipeline principles and interesting usage examples.</p>
 </div>
+<div class="section" id="master-data-reconciliation">
+<h2>Master Data Reconciliation<a class="headerlink" href="#master-data-reconciliation" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Total Number of NAP Merchants -  Active, Closed, Suspended</dt>
+<dd># MBD onboarded -</dd>
+<dt>Total Number of PAP Merchants -  Active, Closed, Suspended</dt>
+<dd># MBD onboarded -</dd>
+</dl>
+</div>
+<div class="section" id="reference-data-reconciliation">
+<h2>Reference Data Reconciliation<a class="headerlink" href="#reference-data-reconciliation" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="transaction-data-reconciliation">
+<h2>Transaction Data Reconciliation<a class="headerlink" href="#transaction-data-reconciliation" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Load Date</dt>
+<dd>NAP Count , MBD Foundation Count, ProcessID
+MBD - Onboarded Merchants
+MBD - non-onboarded Merchants
+MBD - Business Filters and Constraints - Representment, Corrects, PAN blank, Currency Blank</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="rec-owner">
+<h1>REC_OWNER<a class="headerlink" href="#rec-owner" title="Permalink to this headline">¶</a></h1>
+<p>ETL_Source_Control (Exposed to NAP using ODI_WORK synonym)
+ETL_BATCH_ID | ETL_LOAD_DATE | INTERFACE_NAME | ROWCOUNT | CREATED_DATE | CREATED_BY  | LAST_UPDATED_DATE| LAST_UPDATED_BY
+10001 <a href="#id1"><span class="problematic" id="id2">|(could be same ODI variable)|</span></a> NAP IF403 CQPR| 1000000 | SYSDATE | ODI-&lt;session-id&gt;|||</p>
+<p>For Invoice
+control file name, zip creation date, zip file name, NAP IF414 Invoices, number of files,
+Token aware - But how does the ETL system know when an externally sourced data ﬁle has arrived and should begin its process? The ETL system must be able to recognize that the ﬁlehas appeared in the ﬁle system and execute automatically. This process is called token aware. Tokens are ﬁles created in the ﬁle system to trigger an ETL event.
+Applications that are token aware can poll a directory (or database table) for the arrival of a token ﬁle (or a row).</p>
+<p>control-m job -&gt; alert incident to support team -&gt;</p>
+<p>Priority in control-m (NAP has priority over PAP)</p>
 </div>
 
 

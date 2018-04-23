@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data Pipelines &mdash; Real Time Search and Analytics</title>
+  <title>Data Pipelines &mdash; Data Engineering</title>
   
 
   
@@ -30,7 +30,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Reconciliation" href="reconciliation.html" />
-    <link rel="prev" title="Real time search and analytics" href="search-analytics.html" /> 
+    <link rel="prev" title="Search and Insights" href="search-analytics.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Digital Data Engineering Handbook 0.1
+            <a href="index.html" class="icon icon-home"> Data Engineering Handbook 0.1
           
 
           
@@ -81,9 +81,16 @@
             
             
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="search-analytics.html">Real time search and analytics</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Pipelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="principles.html">Data Engineering Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="search-analytics.html">Search and Insights</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Pipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements-from-a-workflow">Requirements from a workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#metadata">Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#measuring-etl-specific-performance-indicators">Measuring ETL Speciﬁc Performance Indicators</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="reconciliation.html">Reconciliation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reconciliation.html#rec-owner">REC_OWNER</a></li>
 </ul>
 
             
@@ -102,7 +109,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Digital Data Engineering Handbook 0.1</a>
+          <a href="index.html">Data Engineering Handbook 0.1</a>
         
       </nav>
 
@@ -154,8 +161,47 @@
 <h1>Data Pipelines<a class="headerlink" href="#data-pipelines" title="Permalink to this headline">¶</a></h1>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">What you will find here are data engineering principles, design patterns,
-data pipeline principles and interesting usage examples.</p>
+<p class="last">Data pipelines are the modern avatar of traditional ETL/ELT and data workflows.</p>
+</div>
+<div class="section" id="requirements-from-a-workflow">
+<h2>Requirements from a workflow<a class="headerlink" href="#requirements-from-a-workflow" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>View graphically - A complex workflow can comprise several tasks (Extract, Transform and Load) and therefore it is often useful to visualize complex data flows using a graph. Visually, a node in a graph represents a task, and an arrow represents the dependency of one task on another. Given that data only needs to be computed once on a given task and the computation then carries forward, the graph is directed and acyclic. This is why most modern workflow jobs are commonly referred to as “DAGs” (Directed Acyclic Graphs).</li>
+<li>Restartability - Ability to restart a failed workflow from the beginning or point of failure i.e. from the task that failed.</li>
+<li>Monitorability - It should be possible to monitor which tasks in the workflow has completed and which are running or queued.</li>
+<li>Execution statistics - It should be possible</li>
+<li>Task dependency across workflows</li>
+<li>Success, Failure and Warnings</li>
+</ul>
+<p>Intra-Day Execution
+Real-Time Capability
+Alerts and Notiﬁcation</p>
+<p>Load Dependencies</p>
+</div>
+<div class="section" id="metadata">
+<h2>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
+<p>scheduler must capture metadata for the contents and schedule of batches and nested batches and that this metadata must be available to business users as well as to the data warehouse team.
+Batch metadata serves as the train schedule for the data warehouse. It should predict when users should expect data to arrive and become available for use.</p>
+<p>The scheduling system should also let users know when data will be arriving late. This notiﬁcation is different from the failure notiﬁcation discussed earlier in this chapter. Data-availability metadata is a crucial aspect ofcommunicationandakeymechanismforsettinguserexpectations.</p>
+<p>Metadata used to notify users of data arrival falls under the category of process metadata. Process metadata captures the operational statistics on the ETL process. It typically includes measures such as the count of rows loaded successfully, rows rejected, elapsed time, rows processed per second, and the row’s estimated time of completion. It is important process metadata because it helps to set user expectations—just like giving announcements at the train station.</p>
+<p>Metadata collected during the cleaning and conforming steps serves several operational roles. It serves to advise the ETL team whether the data is ﬁttobedeliveredtotheendusercommunity.Thedataintheauditdimension is meant to be combined with normal data in specially instrumented data-quality reports, both for instilling conﬁdence in the reported results andsupportingcompliancereporting.Finally,thecleaningandconforming metadataisadirectindicatorofactionitemsforimprovingthedataquality of the original sources. All metadata within control of the batch manager must be captured, stored, and published. In a best-case scenario, metadata should be stored in an open repository that can be shared with other applications. At a minimum, metadata must have reporting capabilities so users and developers have insight into the operational aspects of the data warehouse ETL.</p>
+<p>Analyzing the Types of Failure Unfortunately, to execute and complete successfully, the ETL process depends on many components.
+Once an ETL process is in production, failures are typically due to reasons beyond the control of the process itself.
+Leading causes for production ETL failures include:
+* Network failure
+* Database failure
+* Disk failure
+* Memory failure
+* Data-quality failure
+* Unannounced system upgrade</p>
+</div>
+<div class="section" id="measuring-etl-specific-performance-indicators">
+<h2>Measuring ETL Speciﬁc Performance Indicators<a class="headerlink" href="#measuring-etl-specific-performance-indicators" title="Permalink to this headline">¶</a></h2>
+<p>Followingare ETL-speciﬁc measurements that prove to be useful while investigating load performance:
+* Duration in seconds - This straightforward calculation is the basis of all other calculations. The duration is the difference between the start time and the end time of an ETL process in seconds. For example, if a process is kicked off at 4:00 a.m. and completes at 4:15 a.m., its duration is 900 seconds.
+* Rows processed per second - This is equivalent to the rows loaded per second calculation,except in cases where the source data is larger than the target, as in the case of aggregate loads. Then it is the same as the rows read per second. A sample calculation of rows per second is 1,000,000 rows processed in 15 minutes (1000000 / (15 * 60))= 1111.11 rows/sec.
+* Throughput - Throughput is the rows processed per second multiplied by the number of bytes in each row. Throughput, as with all performance measurements, is an approximation that should be used as a baseline for improving processes.</p>
+<p>You should instrument your ETL system to trigger an alert for any ETL job that takes dramatically more or less time to run than the historical experience would predict.</p>
 </div>
 </div>
 
@@ -170,7 +216,7 @@ data pipeline principles and interesting usage examples.</p>
         <a href="reconciliation.html" class="btn btn-neutral float-right" title="Reconciliation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="search-analytics.html" class="btn btn-neutral" title="Real time search and analytics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="search-analytics.html" class="btn btn-neutral" title="Search and Insights" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

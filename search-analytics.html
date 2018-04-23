@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Real time search and analytics &mdash; Real Time Search and Analytics</title>
+  <title>Search and Insights &mdash; Data Engineering</title>
   
 
   
@@ -30,7 +30,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Data Pipelines" href="data-pipelines.html" />
-    <link rel="prev" title="Digital Data Engineering Handbook 0.1" href="index.html" /> 
+    <link rel="prev" title="Data Engineering Principles" href="principles.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Digital Data Engineering Handbook 0.1
+            <a href="index.html" class="icon icon-home"> Data Engineering Handbook 0.1
           
 
           
@@ -81,7 +81,8 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Real time search and analytics</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="principles.html">Data Engineering Principles</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Search and Insights</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#use-cases">Use Cases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#proposed-architecture">Proposed architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#initial-selection">Initial selection</a></li>
@@ -108,6 +109,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data-pipelines.html">Data Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reconciliation.html">Reconciliation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reconciliation.html#rec-owner">REC_OWNER</a></li>
 </ul>
 
             
@@ -126,7 +128,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Digital Data Engineering Handbook 0.1</a>
+          <a href="index.html">Data Engineering Handbook 0.1</a>
         
       </nav>
 
@@ -157,7 +159,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Real time search and analytics</li>
+      <li>Search and Insights</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -174,8 +176,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="real-time-search-and-analytics">
-<h1>Real time search and analytics<a class="headerlink" href="#real-time-search-and-analytics" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="search-and-insights">
+<h1>Search and Insights<a class="headerlink" href="#search-and-insights" title="Permalink to this headline">¶</a></h1>
 <p>This section describes the search for a high performance search analytics product which can sit between a foundation layer (RDBMS,  filesystem) and application, and provide fast query performance, search capability, handle large volumes, fast ingestion, analytics, high availability etc.</p>
 <div class="section" id="use-cases">
 <h2>Use Cases<a class="headerlink" href="#use-cases" title="Permalink to this headline">¶</a></h2>
@@ -205,12 +207,12 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <div class="section" id="proposed-architecture">
 <h2>Proposed architecture<a class="headerlink" href="#proposed-architecture" title="Permalink to this headline">¶</a></h2>
 <p>This picture depicts where the product would sit within our existing architecture and interactions with other components:</p>
-<img alt="img/integral.png)" src="img/integral.png)" />
+<img alt="images/integral.png)" src="images/integral.png)" />
 </div>
 <div class="section" id="initial-selection">
 <h2>Initial selection<a class="headerlink" href="#initial-selection" title="Permalink to this headline">¶</a></h2>
 <p>With what we are after it’s unlikely a single product can satisfy all requirements, so it’s likely there will be trade-offs therefore we have widen the scope to include a variety of data technologies. Though I must mention with plethora of products available (see below) doing an initial selection was not easy.</p>
-<img alt="img/DataPlatforms.png)" src="img/DataPlatforms.png)" />
+<img alt="images/DataPlatforms.png)" src="images/DataPlatforms.png)" />
 <p>Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it:</p>
 <table border="1" class="colwidths-auto docutils">
 <thead valign="bottom">
@@ -432,7 +434,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 </div>
 <div class="section" id="decision-analysis">
 <h2>Decision analysis<a class="headerlink" href="#decision-analysis" title="Permalink to this headline">¶</a></h2>
-<img alt="img/benchmark.png" src="img/benchmark.png" />
+<img alt="images/benchmark.png" src="images/benchmark.png" />
 </div>
 <div class="section" id="review-and-recommendation">
 <h2>Review and recommendation<a class="headerlink" href="#review-and-recommendation" title="Permalink to this headline">¶</a></h2>
@@ -507,28 +509,28 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <div class="section" id="full-test-results">
 <h3>Full test results<a class="headerlink" href="#full-test-results" title="Permalink to this headline">¶</a></h3>
 <p><strong>MemSQL</strong>
-.. image:: img/mem-jmeter-full.png</p>
+.. image:: images/mem-jmeter-full.png</p>
 <p><strong>Elastic</strong>
-.. image:: img/elastic-jmeter-full.png)</p>
+.. image:: images/elastic-jmeter-full.png)</p>
 </div>
 <div class="section" id="sme-test-results-users-with-1-10-outlets-access">
 <h3>SME test results (users with 1-10 outlets access)<a class="headerlink" href="#sme-test-results-users-with-1-10-outlets-access" title="Permalink to this headline">¶</a></h3>
 <p><strong>MemSQL</strong>
-.. image:: img/mem-jmeter-sme-1-10-users.png</p>
+.. image:: images/mem-jmeter-sme-1-10-users.png</p>
 <p><strong>Elastic</strong>
-.. image:: img/elastic-jmeter-sme-1-10-users.png)</p>
+.. image:: images/elastic-jmeter-sme-1-10-users.png)</p>
 </div>
 <div class="section" id="corp-test-results-users-with-50-5k-outlets-access">
 <h3>CORP test results (users with 50-5k outlets access)<a class="headerlink" href="#corp-test-results-users-with-50-5k-outlets-access" title="Permalink to this headline">¶</a></h3>
 <p><strong>MemSQL</strong>
-.. image:: img/mem-jmeter-corp-50-5k-users.png</p>
+.. image:: images/mem-jmeter-corp-50-5k-users.png</p>
 <p><strong>Elastic</strong>
-.. image:: img/elastic-jmeter-corp-50-5k-users.png</p>
+.. image:: images/elastic-jmeter-corp-50-5k-users.png</p>
 </div>
 </div>
 <div class="section" id="proposed-architecture-diagram">
 <h2>Proposed Architecture Diagram<a class="headerlink" href="#proposed-architecture-diagram" title="Permalink to this headline">¶</a></h2>
-<img alt="img/integral-final.png" src="img/integral-final.png" />
+<img alt="images/integral-final.png" src="images/integral-final.png" />
 <ul class="simple">
 <li>Possible use of Spark based ETL (Spark streaming, Spark SQL, etc.)</li>
 <li>Possible use of parquet file based Spark foundation data layer accessible through Spark SQL (shown as ? above)</li>
@@ -559,7 +561,7 @@ THEN the search returns the results in an average response of 10 seconds and 90%
         <a href="data-pipelines.html" class="btn btn-neutral float-right" title="Data Pipelines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Digital Data Engineering Handbook 0.1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="principles.html" class="btn btn-neutral" title="Data Engineering Principles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -1,4 +1,4 @@
-Real time search and analytics
+Search and Insights
 ==============================
 
 This section describes the search for a high performance search analytics product which can sit between a foundation layer (RDBMS,  filesystem) and application, and provide fast query performance, search capability, handle large volumes, fast ingestion, analytics, high availability etc.
@@ -26,13 +26,13 @@ Proposed architecture
 ----------------------
 This picture depicts where the product would sit within our existing architecture and interactions with other components:
 
-.. image:: img/integral.png)
+.. image:: images/integral.png)
 
 Initial selection
 ------------------
 With what we are after it's unlikely a single product can satisfy all requirements, so it's likely there will be trade-offs therefore we have widen the scope to include a variety of data technologies. Though I must mention with plethora of products available (see below) doing an initial selection was not easy.
 
-.. image:: img/DataPlatforms.png)
+.. image:: images/DataPlatforms.png)
 
 
 Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it:
@@ -91,7 +91,7 @@ How to enforce data role filter to searches on the 'fast search' product? There 
 Decision analysis 
 -----------------
 
-.. image:: img/benchmark.png
+.. image:: images/benchmark.png
 
 Review and recommendation
 -------------------------
@@ -156,33 +156,33 @@ Full test results
 ^^^^^^^^^^^^^^^^^^^
 
 **MemSQL**
-.. image:: img/mem-jmeter-full.png
+.. image:: images/mem-jmeter-full.png
 
 **Elastic**
-.. image:: img/elastic-jmeter-full.png)
+.. image:: images/elastic-jmeter-full.png)
 
 SME test results (users with 1-10 outlets access)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **MemSQL**
-.. image:: img/mem-jmeter-sme-1-10-users.png
+.. image:: images/mem-jmeter-sme-1-10-users.png
 
 **Elastic**
-.. image:: img/elastic-jmeter-sme-1-10-users.png)
+.. image:: images/elastic-jmeter-sme-1-10-users.png)
 
 CORP test results (users with 50-5k outlets access)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **MemSQL**
-.. image:: img/mem-jmeter-corp-50-5k-users.png
+.. image:: images/mem-jmeter-corp-50-5k-users.png
 
 **Elastic**
-.. image:: img/elastic-jmeter-corp-50-5k-users.png
+.. image:: images/elastic-jmeter-corp-50-5k-users.png
 
 
 Proposed Architecture Diagram
 ------------------------------
-.. image:: img/integral-final.png
+.. image:: images/integral-final.png
 
 - Possible use of Spark based ETL (Spark streaming, Spark SQL, etc.)
 - Possible use of parquet file based Spark foundation data layer accessible through Spark SQL (shown as ? above)
