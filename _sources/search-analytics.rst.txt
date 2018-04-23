@@ -156,27 +156,33 @@ Full test results
 ^^^^^^^^^^^^^^^^^^^
 
 **MemSQL**
+
 .. image:: images/mem-jmeter-full.png
 
 **Elastic**
+
 .. image:: images/elastic-jmeter-full.png)
 
 SME test results (users with 1-10 outlets access)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **MemSQL**
+
 .. image:: images/mem-jmeter-sme-1-10-users.png
 
 **Elastic**
+
 .. image:: images/elastic-jmeter-sme-1-10-users.png)
 
 CORP test results (users with 50-5k outlets access)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **MemSQL**
+
 .. image:: images/mem-jmeter-corp-50-5k-users.png
 
 **Elastic**
+
 .. image:: images/elastic-jmeter-corp-50-5k-users.png
 
 

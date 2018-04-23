@@ -3,8 +3,7 @@ Reconciliation
 
 .. important::
 
-    What you will find here are data engineering principles, design patterns,
-    data pipeline principles and interesting usage examples.
+    What you will find here are data reconciliation techniques and framework.
 
 
 Master Data Reconciliation
@@ -30,8 +29,10 @@ Load Date
   MBD - Business Filters and Constraints - Representment, Corrects, PAN blank, Currency Blank
 
 
-REC_OWNER
-=========
+Reconciliation Framework
+------------------------
+Schema - REC_OWNER
+------
 ETL_Source_Control (Exposed to NAP using ODI_WORK synonym)
 ETL_BATCH_ID | ETL_LOAD_DATE | INTERFACE_NAME | ROWCOUNT | CREATED_DATE | CREATED_BY  | LAST_UPDATED_DATE| LAST_UPDATED_BY
 10001 |(could be same ODI variable)| NAP IF403 CQPR| 1000000 | SYSDATE | ODI-<session-id>|||

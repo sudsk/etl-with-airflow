@@ -80,16 +80,17 @@
             
             
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="principles.html">Data Engineering Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="principles.html">Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="search-analytics.html">Search and Insights</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-pipelines.html">Data Pipelines</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reconciliation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#master-data-reconciliation">Master Data Reconciliation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reference-data-reconciliation">Reference Data Reconciliation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#transaction-data-reconciliation">Transaction Data Reconciliation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reconciliation-framework">Reconciliation Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schema-rec-owner">Schema - REC_OWNER</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#rec-owner">REC_OWNER</a></li>
 </ul>
 
             
@@ -160,8 +161,7 @@
 <h1>Reconciliation<a class="headerlink" href="#reconciliation" title="Permalink to this headline">¶</a></h1>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">What you will find here are data engineering principles, design patterns,
-data pipeline principles and interesting usage examples.</p>
+<p class="last">What you will find here are data reconciliation techniques and framework.</p>
 </div>
 <div class="section" id="master-data-reconciliation">
 <h2>Master Data Reconciliation<a class="headerlink" href="#master-data-reconciliation" title="Permalink to this headline">¶</a></h2>
@@ -185,9 +185,11 @@ MBD - non-onboarded Merchants
 MBD - Business Filters and Constraints - Representment, Corrects, PAN blank, Currency Blank</dd>
 </dl>
 </div>
+<div class="section" id="reconciliation-framework">
+<h2>Reconciliation Framework<a class="headerlink" href="#reconciliation-framework" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="rec-owner">
-<h1>REC_OWNER<a class="headerlink" href="#rec-owner" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="schema-rec-owner">
+<h2>Schema - REC_OWNER<a class="headerlink" href="#schema-rec-owner" title="Permalink to this headline">¶</a></h2>
 <p>ETL_Source_Control (Exposed to NAP using ODI_WORK synonym)
 ETL_BATCH_ID | ETL_LOAD_DATE | INTERFACE_NAME | ROWCOUNT | CREATED_DATE | CREATED_BY  | LAST_UPDATED_DATE| LAST_UPDATED_BY
 10001 <a href="#id1"><span class="problematic" id="id2">|(could be same ODI variable)|</span></a> NAP IF403 CQPR| 1000000 | SYSDATE | ODI-&lt;session-id&gt;|||</p>
@@ -197,6 +199,7 @@ Token aware - But how does the ETL system know when an externally sourced data �
 Applications that are token aware can poll a directory (or database table) for the arrival of a token ﬁle (or a row).</p>
 <p>control-m job -&gt; alert incident to support team -&gt;</p>
 <p>Priority in control-m (NAP has priority over PAP)</p>
+</div>
 </div>
 
 
