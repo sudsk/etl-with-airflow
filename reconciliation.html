@@ -183,8 +183,8 @@
 </div>
 <div class="section" id="data-transfer-metadata">
 <h2>Data transfer metadata<a class="headerlink" href="#data-transfer-metadata" title="Permalink to this headline">¶</a></h2>
-<p><strong>Data transfer through tables</strong>
-For data transfer through tables, use the below structure:</p>
+<p><strong>Data transfer through tables</strong></p>
+<p>For data transfer through tables, use the below structure:</p>
 <table border="1" class="colwidths-auto docutils" id="id1">
 <caption><span class="caption-text">Table REC_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
@@ -216,51 +216,64 @@ For data transfer through tables, use the below structure:</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Data transfer through files</strong>
-For data transfer through files, the source should ideally provide a compressed data file and a control file post-completion of the transfer process.
+<p><strong>Data transfer through files</strong></p>
+<p>For data transfer through files, the source should ideally provide a compressed data file and a control file post-completion of the transfer process.
 This process is called “Token aware” - Tokens are files created in the file system to trigger an ETL event. Applications that are token aware can poll a directory for the arrival of a token file.
 The control file holds metadata information about the file transfers. The control file should have an “.info” extension.
 There are variety of ways the data file and control file could be related - like one data file and one control file, multi data files and one control file, or multi data files and multi control files.</p>
 <p>Take the example of simplest scenario - one compressed data file and one control file. The name of control file should be &lt;data file name&gt;.info.</p>
-<p>The structure of control file is comma-delimited:
-.. csv-table:: test.info</p>
-<blockquote>
-<div><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">header:</th><td class="field-body">“FILE_NAME”,”FILE_COUNT”,”FILE_SIZE”,”CKSUM”,”CKSUM-METHOD”</td>
+<p>The structure of control file is comma-delimited:</p>
+<table border="1" class="colwidths-auto docutils" id="id2">
+<caption><span class="caption-text">test.info</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">FILE_NAME</th>
+<th class="head">FILE_COUNT</th>
+<th class="head">FILE_SIZE</th>
+<th class="head">CKSUM</th>
+<th class="head">CKSUM-METHOD</th>
 </tr>
-<tr class="field-even field"><th class="field-name">widths:</th><td class="field-body">auto</td>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>test.gz</td>
+<td>20000</td>
+<td>43856377</td>
+<td>d131dd02c5e6eec4</td>
+<td>MD5</td>
 </tr>
 </tbody>
 </table>
-<p>“test.gz”,”20000”,”43856377”,”d131dd02c5e6eec4”,”MD5”</p>
-</div></blockquote>
 <p>The above control file shows that “test.gz” contains 20,000 files, the file size of “test.gz” is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.</p>
 <p>The data file names should be unique, both the compressed file and it’s content files should be unique. This is to prevent duplicates.</p>
-<p>On the target side, the control-file should be loaded into the “REC_OWNER.ETL_SOURCE_CONTROL” table:
-.. csv-table:: Table REC_OWNER.ETL_SOURCE_CONTROL</p>
-<blockquote>
-<div><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">header:</th><td class="field-body">“INTERFACE_NAME”,”ETL_BATCH_ID”,”ROWCOUNT”,”CREATED_DATE”,”CREATED_BY”,”LAST_UPDATED_DATE”,”LAST_UPDATED_BY”</td>
+<p>On the target side, the control-file should be loaded into the “REC_OWNER.ETL_SOURCE_CONTROL” table:</p>
+<table border="1" class="colwidths-auto docutils" id="id3">
+<caption><span class="caption-text">Table REC_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">INTERFACE_NAME</th>
+<th class="head">ETL_BATCH_ID</th>
+<th class="head">ROWCOUNT</th>
+<th class="head">CREATED_DATE</th>
+<th class="head">CREATED_BY</th>
+<th class="head">LAST_UPDATED_DATE</th>
+<th class="head">LAST_UPDATED_BY</th>
 </tr>
-<tr class="field-even field"><th class="field-name">widths:</th><td class="field-body">auto</td>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>NAP-IF414-INVOICES</td>
+<td>test.gz</td>
+<td>20000</td>
+<td>SYSDATE</td>
+<td>ETL Process ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
 </tr>
 </tbody>
 </table>
-<p>“NAP-IF414-INVOICES”,”test.gz”,”20000”,”SYSDATE”,”ETL Process ID”,”“,”“</p>
-</div></blockquote>
 <p><strong>Streaming Data transfer - Topics/Queues/Streams</strong></p>
 </div>
 <div class="section" id="reconciliation-framework">
 <h2>Reconciliation Framework<a class="headerlink" href="#reconciliation-framework" title="Permalink to this headline">¶</a></h2>
-<p><strong>Reconciliation Table</strong></p>
-<table border="1" class="colwidths-auto docutils" id="id2">
-<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<table border="1" class="colwidths-auto docutils" id="id4">
+<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">RECON_ID</th>
 <th class="head">RECON_FROM</th>
@@ -290,8 +303,8 @@ There are variety of ways the data file and control file could be related - like
 </tr>
 </tbody>
 </table>
-<table border="1" class="colwidths-auto docutils" id="id3">
-<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL_DETAILS</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<table border="1" class="colwidths-auto docutils" id="id5">
+<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL_DETAILS</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">RECON_ID</th>
 <th class="head">RECON_TYPE</th>
@@ -350,6 +363,34 @@ There are variety of ways the data file and control file could be related - like
 <td>BUSINESS-FAILURE</td>
 <td>CURRENCY-BLANK</td>
 <td>54</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="colwidths-auto docutils" id="id6">
+<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL_MASTER</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">RECON_KEY</th>
+<th class="head">DESCRIPTION</th>
+<th class="head">CREATED_DATE</th>
+<th class="head">CREATED_BY</th>
+<th class="head">LAST_UPDATED_DATE</th>
+<th class="head">LAST_UPDATED_BY</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>REPRESENTMENT</td>
+<td>Representments</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>NON-ONBOARDED</td>
+<td>Merchants not onboarded to Digital</td>
 <td>SYSDATE</td>
 <td>PROCESS_ID</td>
 <td>&#160;</td>

@@ -31,6 +31,7 @@ Reconcile count, sum, etc. from staging till the target layer and capture all bu
 Data transfer metadata
 ------------------------
 **Data transfer through tables**
+
 For data transfer through tables, use the below structure:
 
 .. csv-table:: Table REC_OWNER.ETL_SOURCE_CONTROL
@@ -41,6 +42,7 @@ For data transfer through tables, use the below structure:
    "NAP-IF402-Merchant-Details","1021","8500","SYSDATE","ODI-<session-id>","",""
 
 **Data transfer through files**   
+
 For data transfer through files, the source should ideally provide a compressed data file and a control file post-completion of the transfer process.
 This process is called "Token aware" - Tokens are files created in the file system to trigger an ETL event. Applications that are token aware can poll a directory for the arrival of a token file. 
 The control file holds metadata information about the file transfers. The control file should have an ".info" extension.
@@ -49,6 +51,7 @@ There are variety of ways the data file and control file could be related - like
 Take the example of simplest scenario - one compressed data file and one control file. The name of control file should be <data file name>.info.
 
 The structure of control file is comma-delimited:
+
 .. csv-table:: test.info
    :header: "FILE_NAME","FILE_COUNT","FILE_SIZE","CKSUM","CKSUM-METHOD"
    :widths: auto   
@@ -60,6 +63,7 @@ The above control file shows that "test.gz" contains 20,000 files, the file size
 The data file names should be unique, both the compressed file and it's content files should be unique. This is to prevent duplicates.
 
 On the target side, the control-file should be loaded into the "REC_OWNER.ETL_SOURCE_CONTROL" table:
+
 .. csv-table:: Table REC_OWNER.ETL_SOURCE_CONTROL
    :header: "INTERFACE_NAME","ETL_BATCH_ID","ROWCOUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
@@ -72,7 +76,7 @@ On the target side, the control-file should be loaded into the "REC_OWNER.ETL_SO
 Reconciliation Framework
 ------------------------
    
-**Reconciliation Table**
+
 
 .. csv-table:: Table REC_OWNER.RECON_CONTROL
    :header: "RECON_ID","RECON_FROM","RECON_TO","SOURCE_ID","TARGET_ID","SOURCE_COUNT","TARGET_COUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
@@ -80,6 +84,7 @@ Reconciliation Framework
    
    "1001","STG_CQPR","FINANCIAL_TRANS_EVENT",ETL_BATCH_ID/FILE_NAME,PROCESS_ID,1000,700,"SYSDATE","PROCESS_ID","",""
 
+   
 .. csv-table:: Table REC_OWNER.RECON_CONTROL_DETAILS
    :header: "RECON_ID","RECON_TYPE","CATEGORY","KEY","VALUE","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
@@ -90,9 +95,11 @@ Reconciliation Framework
    "1001","COUNT","BUSINESS-FAILURE","PAN-BLANK",54,"SYSDATE","PROCESS_ID","",""
    "1001","COUNT","BUSINESS-FAILURE","CURRENCY-BLANK",54,"SYSDATE","PROCESS_ID","",""
 
+   
 .. csv-table:: Table REC_OWNER.RECON_CONTROL_MASTER
    :header: "RECON_KEY","DESCRIPTION","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto 
+   
    "REPRESENTMENT","Representments","SYSDATE","PROCESS_ID","",""
    "NON-ONBOARDED","Merchants not onboarded to Digital","SYSDATE","PROCESS_ID","",""
 
