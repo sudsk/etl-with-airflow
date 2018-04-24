@@ -3,18 +3,29 @@ Reconciliation
 
 .. important::
 
-    What you will find here are data reconciliation techniques and framework.
+    Reconciliation increases the integrity levels of information stored within the data store. 
+	What you will find here are data reconciliation techniques and framework.
 
+Principles
+-------------------------
+* Reconcile and validate information before it enters the data warehouse
+* Validate information before, during, and after Extract, Translate, and Load (ETL) processes
+* Verify and reconcile information already in your data warehouse against source systems and data marts
+* Validate, balance, and reconcile sources to warehouse, data marts to warehouse, and data marts to sources
+* Ensure that information is not lost or erroneously duplicated
+* Reconcile report contents against the warehouse
+* Perform reasonableness tests to detect potential problems
+* Compute statistical tests to feed other controls or determine if expected thresholds are exceeded
 
 Master Data Reconciliation
 ----------------------------
 
 Reconcile the number of merchants in full load. 
 
-* Total Number of NAP Merchants - Active, Closed, Suspended 
-* Total Number of NAP Digital onboarded + non-onboarded - Active, Closed, Suspended 
-* Total Number of PAP Merchants -  Active, Closed, Suspended 
-* Total Number of PAP Digital onboarded + non-onboarded - Active, Closed, Suspended 
+* Source - Number of NAP Merchants - Active, Closed, Suspended 
+* Target - Number of NAP Digital onboarded + non-onboarded - Active, Closed, Suspended 
+* Source - Number of PAP Merchants -  Active, Closed, Suspended 
+* Target - Number of PAP Digital onboarded + non-onboarded - Active, Closed, Suspended 
 
 Reference Data Reconciliation
 -------------------------------
@@ -28,7 +39,7 @@ Transaction Data Reconciliation
 Reconcile count, sum, etc. from staging till the target layer and capture all business failures, exclusions count.
 
 
-Data transfer metadata
+Source data  transfer metadata
 ------------------------
 **Data transfer through tables**
 
@@ -61,6 +72,10 @@ The structure of control file is comma-delimited:
 The above control file shows that "test.gz" contains 20,000 files, the file size of "test.gz" is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.
 
 The data file names should be unique, both the compressed file and it's content files should be unique. This is to prevent duplicates.
+Duplicate files are a common occurrence when files are being received daily/weekly/monthly from another application. 
+Sometimes, the previous day’s file has been sent in error. Prior to processing the file, business rules can be executed to ensure the 
+correct day’s file will be processed, or in the case of an incorrect file being received, an exception report will be immediately flagged and 
+the process will prevent the incorrect file from processing.
 
 On the target side, the control-file should be loaded into the "REC_OWNER.ETL_SOURCE_CONTROL" table:
 
@@ -75,8 +90,14 @@ On the target side, the control-file should be loaded into the "REC_OWNER.ETL_SO
 
 Reconciliation Framework
 ------------------------
+Combination of ETL tools capabilities and scripting techniques to get counts and balances at the source level when the application 
+is providing the data extract. ETL tools are used to read the feed information and
+track them by updating and loading metadata tables into data warehouse. At the end of the process, custom
+coded reconciliation reports are generated to ensure transparency around the data aggregation process in addition to
+transformations that occur during the data movement. 
    
-
+**Counts and Balances** - An example of the value of balancing information is when a program is used to extract data from a source system as input into a target system. 
+Business rules are used to balance information such as record counts and sum of amounts on the source file and match the record counts and sum of amounts extracted for input into the target system.
 
 .. csv-table:: Table REC_OWNER.RECON_CONTROL
    :header: "RECON_ID","RECON_FROM","RECON_TO","SOURCE_ID","TARGET_ID","SOURCE_COUNT","TARGET_COUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
