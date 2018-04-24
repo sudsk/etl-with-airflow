@@ -26,13 +26,13 @@ Proposed architecture
 ----------------------
 This picture depicts where the product would sit within our existing architecture and interactions with other components:
 
-.. image:: images/integral.png)
+.. image:: images/integral.png
 
 Initial selection
 ------------------
 With what we are after it's unlikely a single product can satisfy all requirements, so it's likely there will be trade-offs therefore we have widen the scope to include a variety of data technologies. Though I must mention with plethora of products available (see below) doing an initial selection was not easy.
 
-.. image:: images/DataPlatforms.png)
+.. image:: images/DataPlatforms.png
 
 
 Initial selection was based on product literature, white-papers, product specifications, and external agency ranking (Forrester and DB-Engines). This table shows high level requirement-features and if the product meets it:
@@ -161,7 +161,7 @@ Full test results
 
 **Elastic**
 
-.. image:: images/elastic-jmeter-full.png)
+.. image:: images/elastic-jmeter-full.png
 
 SME test results (users with 1-10 outlets access)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -172,7 +172,7 @@ SME test results (users with 1-10 outlets access)
 
 **Elastic**
 
-.. image:: images/elastic-jmeter-sme-1-10-users.png)
+.. image:: images/elastic-jmeter-sme-1-10-users.png
 
 CORP test results (users with 50-5k outlets access)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

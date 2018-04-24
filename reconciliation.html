@@ -87,8 +87,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#master-data-reconciliation">Master Data Reconciliation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reference-data-reconciliation">Reference Data Reconciliation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#transaction-data-reconciliation">Transaction Data Reconciliation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-transfer-metadata">Data transfer metadata</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reconciliation-framework">Reconciliation Framework</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#schema-rec-owner">Schema - REC_OWNER</a></li>
 </ul>
 </li>
 </ul>
@@ -165,40 +165,198 @@
 </div>
 <div class="section" id="master-data-reconciliation">
 <h2>Master Data Reconciliation<a class="headerlink" href="#master-data-reconciliation" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>Total Number of NAP Merchants -  Active, Closed, Suspended</dt>
-<dd># MBD onboarded -</dd>
-<dt>Total Number of PAP Merchants -  Active, Closed, Suspended</dt>
-<dd># MBD onboarded -</dd>
-</dl>
+<p>Reconcile the number of merchants in full load.</p>
+<ul class="simple">
+<li>Total Number of NAP Merchants - Active, Closed, Suspended</li>
+<li>Total Number of NAP Digital onboarded + non-onboarded - Active, Closed, Suspended</li>
+<li>Total Number of PAP Merchants -  Active, Closed, Suspended</li>
+<li>Total Number of PAP Digital onboarded + non-onboarded - Active, Closed, Suspended</li>
+</ul>
 </div>
 <div class="section" id="reference-data-reconciliation">
 <h2>Reference Data Reconciliation<a class="headerlink" href="#reference-data-reconciliation" title="Permalink to this headline">¶</a></h2>
+<p>Reconcile Currency, MCC, Card Product Type, etc.</p>
 </div>
 <div class="section" id="transaction-data-reconciliation">
 <h2>Transaction Data Reconciliation<a class="headerlink" href="#transaction-data-reconciliation" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>Load Date</dt>
-<dd>NAP Count , MBD Foundation Count, ProcessID
-MBD - Onboarded Merchants
-MBD - non-onboarded Merchants
-MBD - Business Filters and Constraints - Representment, Corrects, PAN blank, Currency Blank</dd>
-</dl>
+<p>Reconcile count, sum, etc. from staging till the target layer and capture all business failures, exclusions count.</p>
+</div>
+<div class="section" id="data-transfer-metadata">
+<h2>Data transfer metadata<a class="headerlink" href="#data-transfer-metadata" title="Permalink to this headline">¶</a></h2>
+<p><strong>Data transfer through tables</strong>
+For data transfer through tables, use the below structure:</p>
+<table border="1" class="colwidths-auto docutils" id="id1">
+<caption><span class="caption-text">Table REC_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">INTERFACE_NAME</th>
+<th class="head">ETL_BATCH_ID</th>
+<th class="head">ROWCOUNT</th>
+<th class="head">CREATED_DATE</th>
+<th class="head">CREATED_BY</th>
+<th class="head">LAST_UPDATED_DATE</th>
+<th class="head">LAST_UPDATED_BY</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>NAP-IF403-CQPR</td>
+<td>10001</td>
+<td>1996500</td>
+<td>SYSDATE</td>
+<td>ODI-&lt;session-id&gt;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>NAP-IF402-Merchant-Details</td>
+<td>1021</td>
+<td>8500</td>
+<td>SYSDATE</td>
+<td>ODI-&lt;session-id&gt;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Data transfer through files</strong>
+For data transfer through files, the source should ideally provide a compressed data file and a control file post-completion of the transfer process.
+This process is called “Token aware” - Tokens are files created in the file system to trigger an ETL event. Applications that are token aware can poll a directory for the arrival of a token file.
+The control file holds metadata information about the file transfers. The control file should have an “.info” extension.
+There are variety of ways the data file and control file could be related - like one data file and one control file, multi data files and one control file, or multi data files and multi control files.</p>
+<p>Take the example of simplest scenario - one compressed data file and one control file. The name of control file should be &lt;data file name&gt;.info.</p>
+<p>The structure of control file is comma-delimited:
+.. csv-table:: test.info</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">header:</th><td class="field-body">“FILE_NAME”,”FILE_COUNT”,”FILE_SIZE”,”CKSUM”,”CKSUM-METHOD”</td>
+</tr>
+<tr class="field-even field"><th class="field-name">widths:</th><td class="field-body">auto</td>
+</tr>
+</tbody>
+</table>
+<p>“test.gz”,”20000”,”43856377”,”d131dd02c5e6eec4”,”MD5”</p>
+</div></blockquote>
+<p>The above control file shows that “test.gz” contains 20,000 files, the file size of “test.gz” is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.</p>
+<p>The data file names should be unique, both the compressed file and it’s content files should be unique. This is to prevent duplicates.</p>
+<p>On the target side, the control-file should be loaded into the “REC_OWNER.ETL_SOURCE_CONTROL” table:
+.. csv-table:: Table REC_OWNER.ETL_SOURCE_CONTROL</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">header:</th><td class="field-body">“INTERFACE_NAME”,”ETL_BATCH_ID”,”ROWCOUNT”,”CREATED_DATE”,”CREATED_BY”,”LAST_UPDATED_DATE”,”LAST_UPDATED_BY”</td>
+</tr>
+<tr class="field-even field"><th class="field-name">widths:</th><td class="field-body">auto</td>
+</tr>
+</tbody>
+</table>
+<p>“NAP-IF414-INVOICES”,”test.gz”,”20000”,”SYSDATE”,”ETL Process ID”,”“,”“</p>
+</div></blockquote>
+<p><strong>Streaming Data transfer - Topics/Queues/Streams</strong></p>
 </div>
 <div class="section" id="reconciliation-framework">
 <h2>Reconciliation Framework<a class="headerlink" href="#reconciliation-framework" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="schema-rec-owner">
-<h2>Schema - REC_OWNER<a class="headerlink" href="#schema-rec-owner" title="Permalink to this headline">¶</a></h2>
-<p>ETL_Source_Control (Exposed to NAP using ODI_WORK synonym)
-ETL_BATCH_ID | ETL_LOAD_DATE | INTERFACE_NAME | ROWCOUNT | CREATED_DATE | CREATED_BY  | LAST_UPDATED_DATE| LAST_UPDATED_BY
-10001 <a href="#id1"><span class="problematic" id="id2">|(could be same ODI variable)|</span></a> NAP IF403 CQPR| 1000000 | SYSDATE | ODI-&lt;session-id&gt;|||</p>
-<p>For Invoice
-control file name, zip creation date, zip file name, NAP IF414 Invoices, number of files,
-Token aware - But how does the ETL system know when an externally sourced data ﬁle has arrived and should begin its process? The ETL system must be able to recognize that the ﬁlehas appeared in the ﬁle system and execute automatically. This process is called token aware. Tokens are ﬁles created in the ﬁle system to trigger an ETL event.
-Applications that are token aware can poll a directory (or database table) for the arrival of a token ﬁle (or a row).</p>
-<p>control-m job -&gt; alert incident to support team -&gt;</p>
-<p>Priority in control-m (NAP has priority over PAP)</p>
+<p><strong>Reconciliation Table</strong></p>
+<table border="1" class="colwidths-auto docutils" id="id2">
+<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">RECON_ID</th>
+<th class="head">RECON_FROM</th>
+<th class="head">RECON_TO</th>
+<th class="head">SOURCE_ID</th>
+<th class="head">TARGET_ID</th>
+<th class="head">SOURCE_COUNT</th>
+<th class="head">TARGET_COUNT</th>
+<th class="head">CREATED_DATE</th>
+<th class="head">CREATED_BY</th>
+<th class="head">LAST_UPDATED_DATE</th>
+<th class="head">LAST_UPDATED_BY</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1001</td>
+<td>STG_CQPR</td>
+<td>FINANCIAL_TRANS_EVENT</td>
+<td>ETL_BATCH_ID/FILE_NAME</td>
+<td>PROCESS_ID</td>
+<td>1000</td>
+<td>700</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="colwidths-auto docutils" id="id3">
+<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL_DETAILS</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">RECON_ID</th>
+<th class="head">RECON_TYPE</th>
+<th class="head">CATEGORY</th>
+<th class="head">KEY</th>
+<th class="head">VALUE</th>
+<th class="head">CREATED_DATE</th>
+<th class="head">CREATED_BY</th>
+<th class="head">LAST_UPDATED_DATE</th>
+<th class="head">LAST_UPDATED_BY</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1001</td>
+<td>COUNT</td>
+<td>EXCLUSION</td>
+<td>REPRESENTMENT</td>
+<td>54</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>1001</td>
+<td>COUNT</td>
+<td>EXCLUSION</td>
+<td>NON-ONBOARDED</td>
+<td>176</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>1001</td>
+<td>COUNT</td>
+<td>EXCLUSION</td>
+<td>CORRECTS</td>
+<td>32</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>1001</td>
+<td>COUNT</td>
+<td>BUSINESS-FAILURE</td>
+<td>PAN-BLANK</td>
+<td>54</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>1001</td>
+<td>COUNT</td>
+<td>BUSINESS-FAILURE</td>
+<td>CURRENCY-BLANK</td>
+<td>54</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 

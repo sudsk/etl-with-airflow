@@ -169,21 +169,23 @@
 <li>Restartability - Ability to restart a failed workflow from the beginning or point of failure i.e. from the task that failed.</li>
 <li>Monitorability - It should be possible to monitor which tasks in the workflow has completed and which are running or queued.</li>
 <li>Execution statistics - It should be possible</li>
-<li>Task dependency across workflows</li>
+<li>Task dependency across workflows - and ability to</li>
 <li>Success, Failure and Warnings</li>
+<li>Alerts and notifications on Failures and Warnings</li>
+<li>Task Priority to resolve contention in case two tasks requiring same resource</li>
+<li>Intra-Day Execution, Mini batches, Streaming batches, Real-Time ingestion</li>
+<li>Load Dependencies</li>
 </ul>
-<p>Intra-Day Execution
-Real-Time Capability
-Alerts and Notiﬁcation</p>
-<p>Load Dependencies</p>
 </div>
 <div class="section" id="metadata">
 <h2>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
-<p>scheduler must capture metadata for the contents and schedule of batches and nested batches and that this metadata must be available to business users as well as to the data warehouse team.
-Batch metadata serves as the train schedule for the data warehouse. It should predict when users should expect data to arrive and become available for use.</p>
-<p>The scheduling system should also let users know when data will be arriving late. This notiﬁcation is different from the failure notiﬁcation discussed earlier in this chapter. Data-availability metadata is a crucial aspect ofcommunicationandakeymechanismforsettinguserexpectations.</p>
+<ul class="simple">
+<li>Must capture metadata for the contents and schedule of batches and nested batches and that this metadata must be available to business users as well as to the data warehouse team.</li>
+</ul>
+<p>Batch metadata serves as the train schedule for the data warehouse. It should predict when users should expect data to arrive and become available for use.</p>
+<p>The scheduling system should also let users know when data will be arriving late. This notiﬁcation is different from the failure notiﬁcation discussed earlier in this chapter. Data-availability metadata is a crucial aspect of communication and a key mechanism for setting user expectations.</p>
 <p>Metadata used to notify users of data arrival falls under the category of process metadata. Process metadata captures the operational statistics on the ETL process. It typically includes measures such as the count of rows loaded successfully, rows rejected, elapsed time, rows processed per second, and the row’s estimated time of completion. It is important process metadata because it helps to set user expectations—just like giving announcements at the train station.</p>
-<p>Metadata collected during the cleaning and conforming steps serves several operational roles. It serves to advise the ETL team whether the data is ﬁttobedeliveredtotheendusercommunity.Thedataintheauditdimension is meant to be combined with normal data in specially instrumented data-quality reports, both for instilling conﬁdence in the reported results andsupportingcompliancereporting.Finally,thecleaningandconforming metadataisadirectindicatorofactionitemsforimprovingthedataquality of the original sources. All metadata within control of the batch manager must be captured, stored, and published. In a best-case scenario, metadata should be stored in an open repository that can be shared with other applications. At a minimum, metadata must have reporting capabilities so users and developers have insight into the operational aspects of the data warehouse ETL.</p>
+<p>Metadata collected during the cleaning and conforming steps serves several operational roles. It serves to advise the ETL team whether the data is ﬁt to be delivered to the end user community. The data in the audit dimension is meant to be combined with normal data in specially instrumented data-quality reports, both for instilling conﬁdence in the reported results and supporting compliance reporting. Finally,the cleaning and conforming metadata is a direct indicator of action items for improving the data quality of the original sources. All metadata within control of the batch manager must be captured, stored, and published. In a best-case scenario, metadata should be stored in an open repository that can be shared with other applications. At a minimum, metadata must have reporting capabilities so users and developers have insight into the operational aspects of the data warehouse ETL.</p>
 <p>Analyzing the Types of Failure Unfortunately, to execute and complete successfully, the ETL process depends on many components.
 Once an ETL process is in production, failures are typically due to reasons beyond the control of the process itself.
 Leading causes for production ETL failures include:
@@ -196,7 +198,7 @@ Leading causes for production ETL failures include:
 </div>
 <div class="section" id="measuring-etl-specific-performance-indicators">
 <h2>Measuring ETL Speciﬁc Performance Indicators<a class="headerlink" href="#measuring-etl-specific-performance-indicators" title="Permalink to this headline">¶</a></h2>
-<p>Followingare ETL-speciﬁc measurements that prove to be useful while investigating load performance:
+<p>Following are ETL-speciﬁc measurements that prove to be useful while investigating load performance:
 * Duration in seconds - This straightforward calculation is the basis of all other calculations. The duration is the difference between the start time and the end time of an ETL process in seconds. For example, if a process is kicked off at 4:00 a.m. and completes at 4:15 a.m., its duration is 900 seconds.
 * Rows processed per second - This is equivalent to the rows loaded per second calculation,except in cases where the source data is larger than the target, as in the case of aggregate loads. Then it is the same as the rows read per second. A sample calculation of rows per second is 1,000,000 rows processed in 15 minutes (1000000 / (15 * 60))= 1111.11 rows/sec.
 * Throughput - Throughput is the rows processed per second multiplied by the number of bytes in each row. Throughput, as with all performance measurements, is an approximation that should be used as a baseline for improving processes.</p>

@@ -23,6 +23,7 @@ DB2 Access to databases should be via stored procedures, but logic should only b
 Direct table access should be avoided. Data extraction methods e.g. views, functions, stored procedures do provide an additional layer of security as the set of permitted operations on the database are constrained by removing direct table access permissions. This also provides an abstraction layer that can enable database structure changes to be abstracted out and thus isolate the change impact. Logic inside stored procedures is encouraged if it helps protect data integrity, security or performance and be a data logic. Information logic should be left for the application to handle.
 
 DB3-Change control tools
+-------------------------------------------------------------
 
 We should make use of database change control tools to ease the maintenance and deployment of database changes
 
