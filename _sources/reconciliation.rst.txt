@@ -46,11 +46,11 @@ Source data  transfer metadata
 For data transfer through tables, use the below structure:
 
 .. csv-table:: Table REC_OWNER.ETL_SOURCE_CONTROL
-   :header: "INTERFACE_NAME","ETL_BATCH_ID","ROWCOUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
+   :header: "SOURCE_SYSTEM","INTERFACE_NAME","ETL_BATCH_ID","ROWCOUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
    
-   "NAP-IF403-CQPR","10001","1996500","SYSDATE","ODI-<session-id>","",""
-   "NAP-IF402-Merchant-Details","1021","8500","SYSDATE","ODI-<session-id>","",""
+   "NAP","IF403-CQPR","10001","1996500","SYSDATE","ODI-<session-id>","",""
+   "NAP","IF402-MERCHANT-DETAILS","1021","8500","SYSDATE","ODI-<session-id>","",""
 
 **Data transfer through files**   
 
@@ -61,15 +61,14 @@ There are variety of ways the data file and control file could be related - like
 
 Take the example of simplest scenario - one compressed data file and one control file. The name of control file should be <data file name>.info.
 
-The structure of control file is comma-delimited:
+The structure of control file is comma-delimited::
 
-.. csv-table:: test.info
-   :header: "FILE_NAME","FILE_COUNT","FILE_SIZE","CKSUM","CKSUM-METHOD"
-   :widths: auto   
-   
+   cat test.info
+   "FILE_NAME","FILE_COUNT","FILE_SIZE","CHECKSUM","CHECKSUM_TYPE"
    "test.gz","20000","43856377","d131dd02c5e6eec4","MD5"
 
 The above control file shows that "test.gz" contains 20,000 files, the file size of "test.gz" is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.
+CKSUM_TYPE could be MD5 or simple UNIX cksum.
 
 The data file names should be unique, both the compressed file and it's content files should be unique. This is to prevent duplicates.
 Duplicate files are a common occurrence when files are being received daily/weekly/monthly from another application. 
@@ -80,10 +79,10 @@ the process will prevent the incorrect file from processing.
 On the target side, the control-file should be loaded into the "REC_OWNER.ETL_SOURCE_CONTROL" table:
 
 .. csv-table:: Table REC_OWNER.ETL_SOURCE_CONTROL
-   :header: "INTERFACE_NAME","ETL_BATCH_ID","ROWCOUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
+   :header: "SOURCE_SYSTEM","INTERFACE_NAME","ETL_BATCH_ID","ROWCOUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
    
-   "NAP-IF414-INVOICES","test.gz","20000","SYSDATE","ETL Process ID","",""
+   "NAP","IF414-INVOICES","test.gz","20000","SYSDATE","ETL Process ID","",""
 
 **Streaming Data transfer - Topics/Queues/Streams**
 

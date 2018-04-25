@@ -186,6 +186,13 @@ CORP test results (users with 50-5k outlets access)
 .. image:: images/elastic-jmeter-corp-50-5k-users.png
 
 
+External Benchmarking
+---------------------
+A very popular external `benchmarking<http://tech.marksblogg.com/benchmarks.html>`_ was also reviewed:
+
+.. image:: images/mark_benchmark.png
+
+
 Proposed Architecture Diagram
 ------------------------------
 .. image:: images/integral-final.png

@@ -205,7 +205,8 @@
 <table border="1" class="colwidths-auto docutils" id="id1">
 <caption><span class="caption-text">Table REC_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">INTERFACE_NAME</th>
+<tr class="row-odd"><th class="head">SOURCE_SYSTEM</th>
+<th class="head">INTERFACE_NAME</th>
 <th class="head">ETL_BATCH_ID</th>
 <th class="head">ROWCOUNT</th>
 <th class="head">CREATED_DATE</th>
@@ -215,7 +216,8 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>NAP-IF403-CQPR</td>
+<tr class="row-even"><td>NAP</td>
+<td>IF403-CQPR</td>
 <td>10001</td>
 <td>1996500</td>
 <td>SYSDATE</td>
@@ -223,7 +225,8 @@
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>NAP-IF402-Merchant-Details</td>
+<tr class="row-odd"><td>NAP</td>
+<td>IF402-MERCHANT-DETAILS</td>
 <td>1021</td>
 <td>8500</td>
 <td>SYSDATE</td>
@@ -240,36 +243,24 @@ The control file holds metadata information about the file transfers. The contro
 There are variety of ways the data file and control file could be related - like one data file and one control file, multi data files and one control file, or multi data files and multi control files.</p>
 <p>Take the example of simplest scenario - one compressed data file and one control file. The name of control file should be &lt;data file name&gt;.info.</p>
 <p>The structure of control file is comma-delimited:</p>
-<table border="1" class="colwidths-auto docutils" id="id2">
-<caption><span class="caption-text">test.info</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">FILE_NAME</th>
-<th class="head">FILE_COUNT</th>
-<th class="head">FILE_SIZE</th>
-<th class="head">CKSUM</th>
-<th class="head">CKSUM-METHOD</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>test.gz</td>
-<td>20000</td>
-<td>43856377</td>
-<td>d131dd02c5e6eec4</td>
-<td>MD5</td>
-</tr>
-</tbody>
-</table>
-<p>The above control file shows that “test.gz” contains 20,000 files, the file size of “test.gz” is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="n">test</span><span class="o">.</span><span class="n">info</span>
+<span class="s2">&quot;FILE_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;FILE_COUNT&quot;</span><span class="p">,</span><span class="s2">&quot;FILE_SIZE&quot;</span><span class="p">,</span><span class="s2">&quot;CHECKSUM&quot;</span><span class="p">,</span><span class="s2">&quot;CHECKSUM_TYPE&quot;</span>
+<span class="s2">&quot;test.gz&quot;</span><span class="p">,</span><span class="s2">&quot;20000&quot;</span><span class="p">,</span><span class="s2">&quot;43856377&quot;</span><span class="p">,</span><span class="s2">&quot;d131dd02c5e6eec4&quot;</span><span class="p">,</span><span class="s2">&quot;MD5&quot;</span>
+</pre></div>
+</div>
+<p>The above control file shows that “test.gz” contains 20,000 files, the file size of “test.gz” is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.
+CKSUM_TYPE could be MD5 or simple UNIX cksum.</p>
 <p>The data file names should be unique, both the compressed file and it’s content files should be unique. This is to prevent duplicates.
 Duplicate files are a common occurrence when files are being received daily/weekly/monthly from another application.
 Sometimes, the previous day’s file has been sent in error. Prior to processing the file, business rules can be executed to ensure the
 correct day’s file will be processed, or in the case of an incorrect file being received, an exception report will be immediately flagged and
 the process will prevent the incorrect file from processing.</p>
 <p>On the target side, the control-file should be loaded into the “REC_OWNER.ETL_SOURCE_CONTROL” table:</p>
-<table border="1" class="colwidths-auto docutils" id="id3">
-<caption><span class="caption-text">Table REC_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<table border="1" class="colwidths-auto docutils" id="id2">
+<caption><span class="caption-text">Table REC_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">INTERFACE_NAME</th>
+<tr class="row-odd"><th class="head">SOURCE_SYSTEM</th>
+<th class="head">INTERFACE_NAME</th>
 <th class="head">ETL_BATCH_ID</th>
 <th class="head">ROWCOUNT</th>
 <th class="head">CREATED_DATE</th>
@@ -279,7 +270,8 @@ the process will prevent the incorrect file from processing.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>NAP-IF414-INVOICES</td>
+<tr class="row-even"><td>NAP</td>
+<td>IF414-INVOICES</td>
 <td>test.gz</td>
 <td>20000</td>
 <td>SYSDATE</td>
@@ -300,8 +292,8 @@ coded reconciliation reports are generated to ensure transparency around the dat
 transformations that occur during the data movement.</p>
 <p><strong>Counts and Balances</strong> - An example of the value of balancing information is when a program is used to extract data from a source system as input into a target system.
 Business rules are used to balance information such as record counts and sum of amounts on the source file and match the record counts and sum of amounts extracted for input into the target system.</p>
-<table border="1" class="colwidths-auto docutils" id="id4">
-<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<table border="1" class="colwidths-auto docutils" id="id3">
+<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">RECON_ID</th>
 <th class="head">RECON_FROM</th>
@@ -331,8 +323,8 @@ Business rules are used to balance information such as record counts and sum of 
 </tr>
 </tbody>
 </table>
-<table border="1" class="colwidths-auto docutils" id="id5">
-<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL_DETAILS</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<table border="1" class="colwidths-auto docutils" id="id4">
+<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL_DETAILS</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">RECON_ID</th>
 <th class="head">RECON_TYPE</th>
@@ -398,8 +390,8 @@ Business rules are used to balance information such as record counts and sum of 
 </tr>
 </tbody>
 </table>
-<table border="1" class="colwidths-auto docutils" id="id6">
-<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL_MASTER</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
+<table border="1" class="colwidths-auto docutils" id="id5">
+<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL_MASTER</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">RECON_KEY</th>
 <th class="head">DESCRIPTION</th>
