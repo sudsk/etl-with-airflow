@@ -67,10 +67,11 @@ Take the example of simplest scenario - one compressed data file and one control
 The structure of control file is comma-delimited::
 
    $ cat test_20180425105233.info
+   
    "FILE_NAME","FILE_COUNT","FILE_SIZE","CHECKSUM","CHECKSUM_TYPE"
-   "test_20180425105233.gz","20000","43856377","1446861148","cksum"
+   "test_20180425105233.gz","20000","43856377","1446861148","CKSUM"
 
-The above control file shows that "test_20180425105233.gz" contains 20,000 files, the file size of "test_20180425105233.gz" is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.
+The above control file shows that "test_20180425105233.gz" contains 20,000 files, the file size of "test_20180425105233.gz" is 43856377 bytes and CKSUM checksum is 1446861148.
 CKSUM_TYPE could be MD5 or simple UNIX cksum.
 
 The data file names should be unique, both the compressed file and it's content files should be unique. This is to prevent duplicates.
@@ -85,7 +86,7 @@ On the target side, the control-file should be loaded into the "REC_OWNER.ETL_SO
    :header: "SOURCE_SYSTEM","INTERFACE_NAME","TABLE_FILE_NAME","ETL_BATCH_ID","ROW_COUNT","SUM_AMOUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
    
-   "NAP","IF414","test_20180425105233.gz","20000","","SYSDATE","ETL Process ID","",""
+   "NAP","IF414","test_20180425105233.gz","105","20000","","SYSDATE","ETL Process ID","",""
 
 Streaming Data transfer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

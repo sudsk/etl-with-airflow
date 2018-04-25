@@ -258,11 +258,12 @@ There are variety of ways the data file and control file could be related - like
 <p>Take the example of simplest scenario - one compressed data file and one control file. The name of control file should be &lt;data file name&gt;.info.</p>
 <p>The structure of control file is comma-delimited:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat test_20180425105233.info
+
 &quot;FILE_NAME&quot;,&quot;FILE_COUNT&quot;,&quot;FILE_SIZE&quot;,&quot;CHECKSUM&quot;,&quot;CHECKSUM_TYPE&quot;
-&quot;test_20180425105233.gz&quot;,&quot;20000&quot;,&quot;43856377&quot;,&quot;1446861148&quot;,&quot;cksum&quot;
+&quot;test_20180425105233.gz&quot;,&quot;20000&quot;,&quot;43856377&quot;,&quot;1446861148&quot;,&quot;CKSUM&quot;
 </pre></div>
 </div>
-<p>The above control file shows that “test_20180425105233.gz” contains 20,000 files, the file size of “test_20180425105233.gz” is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.
+<p>The above control file shows that “test_20180425105233.gz” contains 20,000 files, the file size of “test_20180425105233.gz” is 43856377 bytes and CKSUM checksum is 1446861148.
 CKSUM_TYPE could be MD5 or simple UNIX cksum.</p>
 <p>The data file names should be unique, both the compressed file and it’s content files should be unique. This is to prevent duplicates.
 Duplicate files are a common occurrence when files are being received daily/weekly/monthly from another application.
@@ -289,11 +290,11 @@ the process will prevent the incorrect file from processing.</p>
 <tr class="row-even"><td>NAP</td>
 <td>IF414</td>
 <td>test_20180425105233.gz</td>
+<td>105</td>
 <td>20000</td>
 <td>&#160;</td>
 <td>SYSDATE</td>
 <td>ETL Process ID</td>
-<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
