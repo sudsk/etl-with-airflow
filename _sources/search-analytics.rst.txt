@@ -121,7 +121,6 @@ MemSQL
 ^^^^^^^
 * Good performance for billion of rows (MemSQL did a PoC with 26B rows)
 * Very fast ingestion speed (> 100k/s)
-* Commercial license is memory based - $20k for 128GB RAM
 * Data is stored ordered by index key. Reversing the order of index keys sort order results in very poor performance as it cannot use fast OrderedColumnstoreScan anymore. 
 * Queries which are not able to fan out to all nodes affects performance. (This should be seen with more testing to compare concurrent users using only one shard compared to concurrent fan-out queries using all shards - this could balance out itself.)
 * Columnstore is built for sequential access, therefore random access on event-id has to be measured. 
@@ -204,8 +203,8 @@ Proposed Architecture Diagram
 Next steps
 ----------
 - Test MemSQL and Elasticsearch on PROD sized infrastructure and data volumes and run all performance tests
-- Provision infrastructure on AWS or on-prem
+- Design and provision infrastructure on cloud or on-prem
 - Use data generator or PPE data
 - Use existing performance test pack (would need to change to adapt to SQLs and Elastic APIs)
-- Put together a team for above activities with representation from SA, Dev, BA, Test, etc.
+- Put together a team for above activities with representation from SA, Infra, Dev, BA, Test, etc.
 - Get business, Infra, Support buy-in for above

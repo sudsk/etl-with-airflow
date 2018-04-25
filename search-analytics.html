@@ -470,7 +470,6 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <ul class="simple">
 <li>Good performance for billion of rows (MemSQL did a PoC with 26B rows)</li>
 <li>Very fast ingestion speed (&gt; 100k/s)</li>
-<li>Commercial license is memory based - $20k for 128GB RAM</li>
 <li>Data is stored ordered by index key. Reversing the order of index keys sort order results in very poor performance as it cannot use fast OrderedColumnstoreScan anymore.</li>
 <li>Queries which are not able to fan out to all nodes affects performance. (This should be seen with more testing to compare concurrent users using only one shard compared to concurrent fan-out queries using all shards - this could balance out itself.)</li>
 <li>Columnstore is built for sequential access, therefore random access on event-id has to be measured.</li>
@@ -546,10 +545,10 @@ THEN the search returns the results in an average response of 10 seconds and 90%
 <h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Test MemSQL and Elasticsearch on PROD sized infrastructure and data volumes and run all performance tests</li>
-<li>Provision infrastructure on AWS or on-prem</li>
+<li>Design and provision infrastructure on cloud or on-prem</li>
 <li>Use data generator or PPE data</li>
 <li>Use existing performance test pack (would need to change to adapt to SQLs and Elastic APIs)</li>
-<li>Put together a team for above activities with representation from SA, Dev, BA, Test, etc.</li>
+<li>Put together a team for above activities with representation from SA, Infra, Dev, BA, Test, etc.</li>
 <li>Get business, Infra, Support buy-in for above</li>
 </ul>
 </div>
