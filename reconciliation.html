@@ -91,6 +91,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#source-data-transfer-metadata">Source data transfer metadata</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#data-transfer-through-tables">Data transfer through tables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#data-transfer-through-files">Data transfer through files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#streaming-data-transfer">Streaming Data transfer</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#reconciliation-framework">Reconciliation Framework</a></li>
@@ -258,7 +259,7 @@ There are variety of ways the data file and control file could be related - like
 <p>The structure of control file is comma-delimited:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat test_20180425105233.info
 &quot;FILE_NAME&quot;,&quot;FILE_COUNT&quot;,&quot;FILE_SIZE&quot;,&quot;CHECKSUM&quot;,&quot;CHECKSUM_TYPE&quot;
-&quot;test_20180425105233.gz&quot;,&quot;20000&quot;,&quot;43856377&quot;,&quot;d131dd02c5e6eec4&quot;,&quot;MD5&quot;
+&quot;test_20180425105233.gz&quot;,&quot;20000&quot;,&quot;43856377&quot;,&quot;1446861148&quot;,&quot;cksum&quot;
 </pre></div>
 </div>
 <p>The above control file shows that “test_20180425105233.gz” contains 20,000 files, the file size of “test_20180425105233.gz” is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.
@@ -298,7 +299,9 @@ the process will prevent the incorrect file from processing.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Streaming Data transfer - Topics/Queues/Streams</strong></p>
+</div>
+<div class="section" id="streaming-data-transfer">
+<h3>Streaming Data transfer<a class="headerlink" href="#streaming-data-transfer" title="Permalink to this headline">¶</a></h3>
 <p>Kafka Topics, JMS etc.</p>
 </div>
 </div>

@@ -68,7 +68,7 @@ The structure of control file is comma-delimited::
 
    $ cat test_20180425105233.info
    "FILE_NAME","FILE_COUNT","FILE_SIZE","CHECKSUM","CHECKSUM_TYPE"
-   "test_20180425105233.gz","20000","43856377","d131dd02c5e6eec4","MD5"
+   "test_20180425105233.gz","20000","43856377","1446861148","cksum"
 
 The above control file shows that "test_20180425105233.gz" contains 20,000 files, the file size of "test_20180425105233.gz" is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.
 CKSUM_TYPE could be MD5 or simple UNIX cksum.
@@ -87,7 +87,8 @@ On the target side, the control-file should be loaded into the "REC_OWNER.ETL_SO
    
    "NAP","IF414","test_20180425105233.gz","20000","","SYSDATE","ETL Process ID","",""
 
-**Streaming Data transfer - Topics/Queues/Streams**
+Streaming Data transfer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Kafka Topics, JMS etc.
 
