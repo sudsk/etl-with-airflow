@@ -88,7 +88,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#master-data-reconciliation">Master Data Reconciliation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reference-data-reconciliation">Reference Data Reconciliation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#transaction-data-reconciliation">Transaction Data Reconciliation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#source-data-transfer-metadata">Source data  transfer metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#source-data-transfer-metadata">Source data transfer metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-transfer-through-tables">Data transfer through tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-transfer-through-files">Data transfer through files</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#reconciliation-framework">Reconciliation Framework</a></li>
 </ul>
 </li>
@@ -199,16 +203,19 @@
 <p>Reconcile count, sum, etc. from staging till the target layer and capture all business failures, exclusions count.</p>
 </div>
 <div class="section" id="source-data-transfer-metadata">
-<h2>Source data  transfer metadata<a class="headerlink" href="#source-data-transfer-metadata" title="Permalink to this headline">¶</a></h2>
-<p><strong>Data transfer through tables</strong></p>
+<h2>Source data transfer metadata<a class="headerlink" href="#source-data-transfer-metadata" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="data-transfer-through-tables">
+<h3>Data transfer through tables<a class="headerlink" href="#data-transfer-through-tables" title="Permalink to this headline">¶</a></h3>
 <p>For data transfer through tables, use the below structure:</p>
 <table border="1" class="colwidths-auto docutils" id="id1">
 <caption><span class="caption-text">Table REC_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">SOURCE_SYSTEM</th>
 <th class="head">INTERFACE_NAME</th>
+<th class="head">TABLE_FILE_NAME</th>
 <th class="head">ETL_BATCH_ID</th>
-<th class="head">ROWCOUNT</th>
+<th class="head">ROW_COUNT</th>
+<th class="head">SUM_AMOUNT</th>
 <th class="head">CREATED_DATE</th>
 <th class="head">CREATED_BY</th>
 <th class="head">LAST_UPDATED_DATE</th>
@@ -217,18 +224,22 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>NAP</td>
-<td>IF403-CQPR</td>
+<td>IF403</td>
+<td>STG_CQPR</td>
 <td>10001</td>
 <td>1996500</td>
+<td>672945600</td>
 <td>SYSDATE</td>
 <td>ODI-&lt;session-id&gt;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>NAP</td>
-<td>IF402-MERCHANT-DETAILS</td>
+<td>IF402</td>
+<td>STG_MERCHANT_DETAILS</td>
 <td>1021</td>
 <td>8500</td>
+<td>&#160;</td>
 <td>SYSDATE</td>
 <td>ODI-&lt;session-id&gt;</td>
 <td>&#160;</td>
@@ -236,19 +247,21 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Data transfer through files</strong></p>
+</div>
+<div class="section" id="data-transfer-through-files">
+<h3>Data transfer through files<a class="headerlink" href="#data-transfer-through-files" title="Permalink to this headline">¶</a></h3>
 <p>For data transfer through files, the source should ideally provide a compressed data file and a control file post-completion of the transfer process.
 This process is called “Token aware” - Tokens are files created in the file system to trigger an ETL event. Applications that are token aware can poll a directory for the arrival of a token file.
 The control file holds metadata information about the file transfers. The control file should have an “.info” extension.
 There are variety of ways the data file and control file could be related - like one data file and one control file, multi data files and one control file, or multi data files and multi control files.</p>
 <p>Take the example of simplest scenario - one compressed data file and one control file. The name of control file should be &lt;data file name&gt;.info.</p>
 <p>The structure of control file is comma-delimited:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="n">test</span><span class="o">.</span><span class="n">info</span>
-<span class="s2">&quot;FILE_NAME&quot;</span><span class="p">,</span><span class="s2">&quot;FILE_COUNT&quot;</span><span class="p">,</span><span class="s2">&quot;FILE_SIZE&quot;</span><span class="p">,</span><span class="s2">&quot;CHECKSUM&quot;</span><span class="p">,</span><span class="s2">&quot;CHECKSUM_TYPE&quot;</span>
-<span class="s2">&quot;test.gz&quot;</span><span class="p">,</span><span class="s2">&quot;20000&quot;</span><span class="p">,</span><span class="s2">&quot;43856377&quot;</span><span class="p">,</span><span class="s2">&quot;d131dd02c5e6eec4&quot;</span><span class="p">,</span><span class="s2">&quot;MD5&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat test_20180425105233.info
+&quot;FILE_NAME&quot;,&quot;FILE_COUNT&quot;,&quot;FILE_SIZE&quot;,&quot;CHECKSUM&quot;,&quot;CHECKSUM_TYPE&quot;
+&quot;test_20180425105233.gz&quot;,&quot;20000&quot;,&quot;43856377&quot;,&quot;d131dd02c5e6eec4&quot;,&quot;MD5&quot;
 </pre></div>
 </div>
-<p>The above control file shows that “test.gz” contains 20,000 files, the file size of “test.gz” is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.
+<p>The above control file shows that “test_20180425105233.gz” contains 20,000 files, the file size of “test_20180425105233.gz” is 43856377 bytes and MD5 checksum is d131dd02c5e6eec4.
 CKSUM_TYPE could be MD5 or simple UNIX cksum.</p>
 <p>The data file names should be unique, both the compressed file and it’s content files should be unique. This is to prevent duplicates.
 Duplicate files are a common occurrence when files are being received daily/weekly/monthly from another application.
@@ -261,8 +274,10 @@ the process will prevent the incorrect file from processing.</p>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">SOURCE_SYSTEM</th>
 <th class="head">INTERFACE_NAME</th>
+<th class="head">TABLE_FILE_NAME</th>
 <th class="head">ETL_BATCH_ID</th>
-<th class="head">ROWCOUNT</th>
+<th class="head">ROW_COUNT</th>
+<th class="head">SUM_AMOUNT</th>
 <th class="head">CREATED_DATE</th>
 <th class="head">CREATED_BY</th>
 <th class="head">LAST_UPDATED_DATE</th>
@@ -271,25 +286,28 @@ the process will prevent the incorrect file from processing.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>NAP</td>
-<td>IF414-INVOICES</td>
-<td>test.gz</td>
+<td>IF414</td>
+<td>test_20180425105233.gz</td>
 <td>20000</td>
+<td>&#160;</td>
 <td>SYSDATE</td>
 <td>ETL Process ID</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Streaming Data transfer - Topics/Queues/Streams</strong></p>
+<p>Kafka Topics, JMS etc.</p>
+</div>
 </div>
 <div class="section" id="reconciliation-framework">
 <h2>Reconciliation Framework<a class="headerlink" href="#reconciliation-framework" title="Permalink to this headline">¶</a></h2>
 <p>Combination of ETL tools capabilities and scripting techniques to get counts and balances at the source level when the application
 is providing the data extract. ETL tools are used to read the feed information and
-track them by updating and loading metadata tables into data warehouse. At the end of the process, custom
-coded reconciliation reports are generated to ensure transparency around the data aggregation process in addition to
-transformations that occur during the data movement.</p>
+track them by updating and loading metadata tables into data warehouse. At the end of the process, reconciliation reports are generated
+to ensure transparency around the data ingestion process in addition to transformations that occur during the data movement.</p>
 <p><strong>Counts and Balances</strong> - An example of the value of balancing information is when a program is used to extract data from a source system as input into a target system.
 Business rules are used to balance information such as record counts and sum of amounts on the source file and match the record counts and sum of amounts extracted for input into the target system.</p>
 <table border="1" class="colwidths-auto docutils" id="id3">
