@@ -188,7 +188,7 @@ CORP test results (users with 50-5k outlets access)
 
 External Benchmarking
 ---------------------
-A very popular external `benchmarking<http://tech.marksblogg.com/benchmarks.html>`_ was also reviewed:
+A very popular external `benchmarking <http://tech.marksblogg.com/benchmarks.html>`_ was also reviewed:
 
 .. image:: images/mark_benchmark.png
 
