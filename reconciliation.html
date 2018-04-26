@@ -168,7 +168,7 @@
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
 <dl class="last docutils">
-<dt>Reconciliation increases the integrity levels of information stored within the data store.</dt>
+<dt>Reconciliation increases the integrity levels of information stored within the data store/warehouse.</dt>
 <dd>What you will find here are data reconciliation techniques and framework.</dd>
 </dl>
 </div>
@@ -176,9 +176,8 @@
 <h2>Principles<a class="headerlink" href="#principles" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Reconcile and validate information before it enters the data warehouse</li>
-<li>Validate information before, during, and after Extract, Translate, and Load (ETL) processes</li>
-<li>Verify and reconcile information already in your data warehouse against source systems and data marts</li>
-<li>Validate, balance, and reconcile sources to warehouse, data marts to warehouse, and data marts to sources</li>
+<li>Validate information before, during, and after Extract, Transform, and Load (ETL) processes</li>
+<li>Verify and reconcile information already in your data warehouse against source systems</li>
 <li>Ensure that information is not lost or erroneously duplicated</li>
 <li>Reconcile report contents against the warehouse</li>
 <li>Perform reasonableness tests to detect potential problems</li>
@@ -201,7 +200,7 @@
 </div>
 <div class="section" id="transaction-data-reconciliation">
 <h2>Transaction Data Reconciliation<a class="headerlink" href="#transaction-data-reconciliation" title="Permalink to this headline">¶</a></h2>
-<p>Reconcile count, sum, etc. from staging till the target layer and capture all business failures, exclusions count.</p>
+<p>Reconcile count, balances e.g. sum, etc. from staging till the target layer and capture all business failures, exclusions count.</p>
 </div>
 <div class="section" id="source-data-transfer-metadata">
 <h2>Source data transfer metadata<a class="headerlink" href="#source-data-transfer-metadata" title="Permalink to this headline">¶</a></h2>
@@ -209,14 +208,15 @@
 <h3>Data transfer through tables<a class="headerlink" href="#data-transfer-through-tables" title="Permalink to this headline">¶</a></h3>
 <p>For data transfer through tables, use the below structure:</p>
 <table border="1" class="colwidths-auto docutils" id="id1">
-<caption><span class="caption-text">Table REC_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Table ETL_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">SOURCE_SYSTEM</th>
 <th class="head">INTERFACE_NAME</th>
 <th class="head">TABLE_FILE_NAME</th>
 <th class="head">ETL_BATCH_ID</th>
 <th class="head">ROW_COUNT</th>
-<th class="head">SUM_AMOUNT</th>
+<th class="head">BALANCE_SUM</th>
+<th class="head">BALANCE_COLUMN</th>
 <th class="head">CREATED_DATE</th>
 <th class="head">CREATED_BY</th>
 <th class="head">LAST_UPDATED_DATE</th>
@@ -230,6 +230,7 @@
 <td>10001</td>
 <td>1996500</td>
 <td>672945600</td>
+<td>PAYER_AMOUNT</td>
 <td>SYSDATE</td>
 <td>ODI-&lt;session-id&gt;</td>
 <td>&#160;</td>
@@ -245,9 +246,26 @@
 <td>ODI-&lt;session-id&gt;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>&#160;</td>
 </tr>
 </tbody>
 </table>
+<p>The control record is to be inserted post successful data transfer to the staging table e.g. once data is transferred and committed to STG_CQPR, then
+a record is inserted as shown above into the ETL_SOURCE_CONTROL table. This signifies that the transfer was successful and provides the counts and balances for reconciliation.
+The context should exactly match as the staging table populated i.e. SOURCE_SYSTEM, INTERFACE_NAME, TABLE_FILE_NAME, and ETL_BATCH_ID should provide the
+necessary context to tie the control record to the staging table.</p>
+<p>Fields Description:
+* SOURCE_SYSTEM - NAP, PAP, etc.
+* INTERFACE_NAME - IF402, IF403, IF414, IF408, etc.
+* TABLE_FILE_NAME - Staging table names or file names e.g. STG_CQPR
+* ETL_BATCH_ID - same as the one inserted into the staging table for this particular transfer
+* ROW_COUNT - count of records in the staging table or file
+* BALANCE_COLUMN - the field used for balances e.g. PAYER_AMOUNT
+* BALANCE_SUM - the balance amount, usually the aggregate function should be SUM in all cases
+* CREATED_DATE - (audit column) date of creation of this control record
+* CREATED_BY - (audit column) process/session-id etc. of the process which inserted this control record
+* LAST_UPDATED_DATE - (audit column) left blank as we don’t expect this table to be updated
+* LAST_UPDATED_BY - (audit column) left blank as we don’t expect this table to be updated</p>
 </div>
 <div class="section" id="data-transfer-through-files">
 <h3>Data transfer through files<a class="headerlink" href="#data-transfer-through-files" title="Permalink to this headline">¶</a></h3>
@@ -272,7 +290,7 @@ correct day’s file will be processed, or in the case of an incorrect file bein
 the process will prevent the incorrect file from processing.</p>
 <p>On the target side, the control-file should be loaded into the “REC_OWNER.ETL_SOURCE_CONTROL” table:</p>
 <table border="1" class="colwidths-auto docutils" id="id2">
-<caption><span class="caption-text">Table REC_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Table ETL_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">SOURCE_SYSTEM</th>
 <th class="head">INTERFACE_NAME</th>
@@ -315,7 +333,7 @@ to ensure transparency around the data ingestion process in addition to transfor
 <p><strong>Counts and Balances</strong> - An example of the value of balancing information is when a program is used to extract data from a source system as input into a target system.
 Business rules are used to balance information such as record counts and sum of amounts on the source file and match the record counts and sum of amounts extracted for input into the target system.</p>
 <table border="1" class="colwidths-auto docutils" id="id3">
-<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Table ETL_OWNER.RECON_CONTROL</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">RECON_ID</th>
 <th class="head">RECON_FROM</th>
@@ -346,7 +364,7 @@ Business rules are used to balance information such as record counts and sum of 
 </tbody>
 </table>
 <table border="1" class="colwidths-auto docutils" id="id4">
-<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL_DETAILS</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Table ETL_OWNER.RECON_CONTROL_DETAILS</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">RECON_ID</th>
 <th class="head">RECON_TYPE</th>
@@ -413,7 +431,7 @@ Business rules are used to balance information such as record counts and sum of 
 </tbody>
 </table>
 <table border="1" class="colwidths-auto docutils" id="id5">
-<caption><span class="caption-text">Table REC_OWNER.RECON_CONTROL_MASTER</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Table ETL_OWNER.RECON_CONTROL_MASTER</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">RECON_KEY</th>
 <th class="head">DESCRIPTION</th>

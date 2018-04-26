@@ -3,15 +3,14 @@ Reconciliation
 
 .. important::
 
-    Reconciliation increases the integrity levels of information stored within the data store. 
+    Reconciliation increases the integrity levels of information stored within the data store/warehouse. 
 	What you will find here are data reconciliation techniques and framework.
 
 Principles
 -------------------------
 * Reconcile and validate information before it enters the data warehouse
-* Validate information before, during, and after Extract, Translate, and Load (ETL) processes
-* Verify and reconcile information already in your data warehouse against source systems and data marts
-* Validate, balance, and reconcile sources to warehouse, data marts to warehouse, and data marts to sources
+* Validate information before, during, and after Extract, Transform, and Load (ETL) processes
+* Verify and reconcile information already in your data warehouse against source systems
 * Ensure that information is not lost or erroneously duplicated
 * Reconcile report contents against the warehouse
 * Perform reasonableness tests to detect potential problems
@@ -36,7 +35,7 @@ Reconcile Currency, MCC, Card Product Type, etc.
 Transaction Data Reconciliation
 --------------------------------
 
-Reconcile count, sum, etc. from staging till the target layer and capture all business failures, exclusions count.
+Reconcile count, balances e.g. sum, etc. from staging till the target layer and capture all business failures, exclusions count.
 
 
 Source data transfer metadata
@@ -47,12 +46,30 @@ Data transfer through tables
 
 For data transfer through tables, use the below structure:
 
-.. csv-table:: Table REC_OWNER.ETL_SOURCE_CONTROL
-   :header: "SOURCE_SYSTEM","INTERFACE_NAME","TABLE_FILE_NAME","ETL_BATCH_ID","ROW_COUNT","SUM_AMOUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
+.. csv-table:: Table ETL_OWNER.ETL_SOURCE_CONTROL
+   :header: "SOURCE_SYSTEM","INTERFACE_NAME","TABLE_FILE_NAME","ETL_BATCH_ID","ROW_COUNT","BALANCE_SUM","BALANCE_COLUMN","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
    
-   "NAP","IF403","STG_CQPR","10001","1996500","672945600","SYSDATE","ODI-<session-id>","",""
+   "NAP","IF403","STG_CQPR","10001","1996500","672945600","PAYER_AMOUNT","SYSDATE","ODI-<session-id>","",""
    "NAP","IF402","STG_MERCHANT_DETAILS","1021","8500","","SYSDATE","ODI-<session-id>","",""
+   
+The control record is to be inserted post successful data transfer to the staging table e.g. once data is transferred and committed to STG_CQPR, then 
+a record is inserted as shown above into the ETL_SOURCE_CONTROL table. This signifies that the transfer was successful and provides the counts and balances for reconciliation.
+The context should exactly match as the staging table populated i.e. SOURCE_SYSTEM, INTERFACE_NAME, TABLE_FILE_NAME, and ETL_BATCH_ID should provide the
+necessary context to tie the control record to the staging table. 
+
+Fields Description:
+* SOURCE_SYSTEM - NAP, PAP, etc.
+* INTERFACE_NAME - IF402, IF403, IF414, IF408, etc.
+* TABLE_FILE_NAME - Staging table names or file names e.g. STG_CQPR
+* ETL_BATCH_ID - same as the one inserted into the staging table for this particular transfer
+* ROW_COUNT - count of records in the staging table or file
+* BALANCE_COLUMN - the field used for balances e.g. PAYER_AMOUNT
+* BALANCE_SUM - the balance amount, usually the aggregate function should be SUM in all cases
+* CREATED_DATE - (audit column) date of creation of this control record
+* CREATED_BY - (audit column) process/session-id etc. of the process which inserted this control record
+* LAST_UPDATED_DATE - (audit column) left blank as we don't expect this table to be updated
+* LAST_UPDATED_BY - (audit column) left blank as we don't expect this table to be updated
 
 Data transfer through files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -82,7 +99,7 @@ the process will prevent the incorrect file from processing.
 
 On the target side, the control-file should be loaded into the "REC_OWNER.ETL_SOURCE_CONTROL" table:
 
-.. csv-table:: Table REC_OWNER.ETL_SOURCE_CONTROL
+.. csv-table:: Table ETL_OWNER.ETL_SOURCE_CONTROL
    :header: "SOURCE_SYSTEM","INTERFACE_NAME","TABLE_FILE_NAME","ETL_BATCH_ID","ROW_COUNT","SUM_AMOUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
    
@@ -103,14 +120,14 @@ to ensure transparency around the data ingestion process in addition to transfor
 **Counts and Balances** - An example of the value of balancing information is when a program is used to extract data from a source system as input into a target system. 
 Business rules are used to balance information such as record counts and sum of amounts on the source file and match the record counts and sum of amounts extracted for input into the target system.
 
-.. csv-table:: Table REC_OWNER.RECON_CONTROL
+.. csv-table:: Table ETL_OWNER.RECON_CONTROL
    :header: "RECON_ID","RECON_FROM","RECON_TO","SOURCE_ID","TARGET_ID","SOURCE_COUNT","TARGET_COUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
    
    "1001","STG_CQPR","FINANCIAL_TRANS_EVENT",ETL_BATCH_ID/FILE_NAME,PROCESS_ID,1000,700,"SYSDATE","PROCESS_ID","",""
 
    
-.. csv-table:: Table REC_OWNER.RECON_CONTROL_DETAILS
+.. csv-table:: Table ETL_OWNER.RECON_CONTROL_DETAILS
    :header: "RECON_ID","RECON_TYPE","CATEGORY","KEY","VALUE","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
    
@@ -121,7 +138,7 @@ Business rules are used to balance information such as record counts and sum of 
    "1001","COUNT","BUSINESS-FAILURE","CURRENCY-BLANK",54,"SYSDATE","PROCESS_ID","",""
 
    
-.. csv-table:: Table REC_OWNER.RECON_CONTROL_MASTER
+.. csv-table:: Table ETL_OWNER.RECON_CONTROL_MASTER
    :header: "RECON_KEY","DESCRIPTION","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto 
    
