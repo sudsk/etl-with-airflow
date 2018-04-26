@@ -242,9 +242,9 @@
 <td>1021</td>
 <td>8500</td>
 <td>&#160;</td>
+<td>&#160;</td>
 <td>SYSDATE</td>
 <td>ODI-&lt;session-id&gt;</td>
-<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
@@ -254,18 +254,20 @@
 a record is inserted as shown above into the ETL_SOURCE_CONTROL table. This signifies that the transfer was successful and provides the counts and balances for reconciliation.
 The context should exactly match as the staging table populated i.e. SOURCE_SYSTEM, INTERFACE_NAME, TABLE_FILE_NAME, and ETL_BATCH_ID should provide the
 necessary context to tie the control record to the staging table.</p>
-<p>Fields Description:
-* SOURCE_SYSTEM - NAP, PAP, etc.
-* INTERFACE_NAME - IF402, IF403, IF414, IF408, etc.
-* TABLE_FILE_NAME - Staging table names or file names e.g. STG_CQPR
-* ETL_BATCH_ID - same as the one inserted into the staging table for this particular transfer
-* ROW_COUNT - count of records in the staging table or file
-* BALANCE_COLUMN - the field used for balances e.g. PAYER_AMOUNT
-* BALANCE_SUM - the balance amount, usually the aggregate function should be SUM in all cases
-* CREATED_DATE - (audit column) date of creation of this control record
-* CREATED_BY - (audit column) process/session-id etc. of the process which inserted this control record
-* LAST_UPDATED_DATE - (audit column) left blank as we don’t expect this table to be updated
-* LAST_UPDATED_BY - (audit column) left blank as we don’t expect this table to be updated</p>
+<p>Fields Description:</p>
+<ul class="simple">
+<li>SOURCE_SYSTEM - NAP, PAP, etc.</li>
+<li>INTERFACE_NAME - IF402, IF403, IF414, IF408, etc.</li>
+<li>TABLE_FILE_NAME - Staging table names or file names e.g. STG_CQPR</li>
+<li>ETL_BATCH_ID - same as the one inserted into the staging table for this particular transfer</li>
+<li>ROW_COUNT - count of records in the staging table or file</li>
+<li>BALANCE_COLUMN - the field used for balances e.g. PAYER_AMOUNT</li>
+<li>BALANCE_SUM - the balance amount, usually the aggregate function should be SUM in all cases</li>
+<li>CREATED_DATE - (audit column) date of creation of this control record</li>
+<li>CREATED_BY - (audit column) process/session-id etc. of the process which inserted this control record</li>
+<li>LAST_UPDATED_DATE - (audit column) left blank as we don’t expect this table to be updated</li>
+<li>LAST_UPDATED_BY - (audit column) left blank as we don’t expect this table to be updated</li>
+</ul>
 </div>
 <div class="section" id="data-transfer-through-files">
 <h3>Data transfer through files<a class="headerlink" href="#data-transfer-through-files" title="Permalink to this headline">¶</a></h3>

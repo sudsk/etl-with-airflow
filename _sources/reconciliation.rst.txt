@@ -51,7 +51,7 @@ For data transfer through tables, use the below structure:
    :widths: auto   
    
    "NAP","IF403","STG_CQPR","10001","1996500","672945600","PAYER_AMOUNT","SYSDATE","ODI-<session-id>","",""
-   "NAP","IF402","STG_MERCHANT_DETAILS","1021","8500","","SYSDATE","ODI-<session-id>","",""
+   "NAP","IF402","STG_MERCHANT_DETAILS","1021","8500","","","SYSDATE","ODI-<session-id>","",""
    
 The control record is to be inserted post successful data transfer to the staging table e.g. once data is transferred and committed to STG_CQPR, then 
 a record is inserted as shown above into the ETL_SOURCE_CONTROL table. This signifies that the transfer was successful and provides the counts and balances for reconciliation.
@@ -59,6 +59,7 @@ The context should exactly match as the staging table populated i.e. SOURCE_SYST
 necessary context to tie the control record to the staging table. 
 
 Fields Description:
+
 * SOURCE_SYSTEM - NAP, PAP, etc.
 * INTERFACE_NAME - IF402, IF403, IF414, IF408, etc.
 * TABLE_FILE_NAME - Staging table names or file names e.g. STG_CQPR
