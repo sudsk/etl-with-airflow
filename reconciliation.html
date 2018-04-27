@@ -88,7 +88,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#master-data-reconciliation">Master Data Reconciliation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reference-data-reconciliation">Reference Data Reconciliation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#transaction-data-reconciliation">Transaction Data Reconciliation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#source-data-transfer-metadata">Source data transfer metadata</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#source-data-transfer-controls">Source data transfer controls</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#data-transfer-through-tables">Data transfer through tables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#data-transfer-through-files">Data transfer through files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#streaming-data-transfer">Streaming Data transfer</a></li>
@@ -202,8 +202,8 @@
 <h2>Transaction Data Reconciliation<a class="headerlink" href="#transaction-data-reconciliation" title="Permalink to this headline">¶</a></h2>
 <p>Reconcile count, balances e.g. sum, etc. from staging till the target layer and capture all business failures, exclusions count.</p>
 </div>
-<div class="section" id="source-data-transfer-metadata">
-<h2>Source data transfer metadata<a class="headerlink" href="#source-data-transfer-metadata" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="source-data-transfer-controls">
+<h2>Source data transfer controls<a class="headerlink" href="#source-data-transfer-controls" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="data-transfer-through-tables">
 <h3>Data transfer through tables<a class="headerlink" href="#data-transfer-through-tables" title="Permalink to this headline">¶</a></h3>
 <p>For data transfer through tables, use the below structure:</p>
@@ -261,12 +261,12 @@ necessary context to tie the control record to the staging table.</p>
 <li>TABLE_FILE_NAME - Staging table names or file names e.g. STG_CQPR</li>
 <li>ETL_BATCH_ID - same as the one inserted into the staging table for this particular transfer</li>
 <li>ROW_COUNT - count of records in the staging table or file</li>
-<li>BALANCE_COLUMN - the field used for balances e.g. PAYER_AMOUNT</li>
-<li>BALANCE_SUM - the balance amount, usually the aggregate function should be SUM in all cases</li>
-<li>CREATED_DATE - (audit column) date of creation of this control record</li>
-<li>CREATED_BY - (audit column) process/session-id etc. of the process which inserted this control record</li>
-<li>LAST_UPDATED_DATE - (audit column) left blank as we don’t expect this table to be updated</li>
-<li>LAST_UPDATED_BY - (audit column) left blank as we don’t expect this table to be updated</li>
+<li>BALANCE_COLUMN - (optional field) the field used for balances e.g. PAYER_AMOUNT</li>
+<li>BALANCE_SUM - (optional field) the balance amount, usually the aggregate function should be SUM in all cases</li>
+<li>CREATED_DATE - (audit field) date of creation of this control record</li>
+<li>CREATED_BY - (audit field) process/session-id etc. of the process which inserted this control record</li>
+<li>LAST_UPDATED_DATE - (audit field) left blank as we don’t expect this table to be updated</li>
+<li>LAST_UPDATED_BY - (audit field) left blank as we don’t expect this table to be updated</li>
 </ul>
 </div>
 <div class="section" id="data-transfer-through-files">
@@ -283,14 +283,21 @@ There are variety of ways the data file and control file could be related - like
 &quot;test_20180425105233.gz&quot;,&quot;20000&quot;,&quot;43856377&quot;,&quot;1446861148&quot;,&quot;CKSUM&quot;
 </pre></div>
 </div>
-<p>The above control file shows that “test_20180425105233.gz” contains 20,000 files, the file size of “test_20180425105233.gz” is 43856377 bytes and CKSUM checksum is 1446861148.
-CKSUM_TYPE could be MD5 or simple UNIX cksum.</p>
+<p>The above control file shows that “test_20180425105233.gz” contains 20,000 files, the file size of “test_20180425105233.gz” is 43856377 bytes and CKSUM checksum is 1446861148.</p>
+<p>Fields Description:</p>
+<ul class="simple">
+<li>FILE_NAME - data file name. could be a compressed file. if compressed use standard compression techniques e.g. gz or zip.</li>
+<li>FILE_COUNT - if compressed file, then the number of files inside. if uncompressed file, then the number of records inside.</li>
+<li>FILE_SIZE - size of the file in bytes given by FILE_NAME</li>
+<li>CHECKSUM - checksum of the file given by FILE_NAME</li>
+<li>CHECKSUM_TYPE - checksum method e.g. CKSUM (for UNIX cksum) or MD5</li>
+</ul>
 <p>The data file names should be unique, both the compressed file and it’s content files should be unique. This is to prevent duplicates.
 Duplicate files are a common occurrence when files are being received daily/weekly/monthly from another application.
 Sometimes, the previous day’s file has been sent in error. Prior to processing the file, business rules can be executed to ensure the
 correct day’s file will be processed, or in the case of an incorrect file being received, an exception report will be immediately flagged and
 the process will prevent the incorrect file from processing.</p>
-<p>On the target side, the control-file should be loaded into the “REC_OWNER.ETL_SOURCE_CONTROL” table:</p>
+<p>On the target side, the control-file should be loaded into the “ETL_OWNER.ETL_SOURCE_CONTROL” table:</p>
 <table border="1" class="colwidths-auto docutils" id="id2">
 <caption><span class="caption-text">Table ETL_OWNER.ETL_SOURCE_CONTROL</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
@@ -329,21 +336,27 @@ the process will prevent the incorrect file from processing.</p>
 <div class="section" id="reconciliation-framework">
 <h2>Reconciliation Framework<a class="headerlink" href="#reconciliation-framework" title="Permalink to this headline">¶</a></h2>
 <p>Combination of ETL tools capabilities and scripting techniques to get counts and balances at the source level when the application
-is providing the data extract. ETL tools are used to read the feed information and
-track them by updating and loading metadata tables into data warehouse. At the end of the process, reconciliation reports are generated
-to ensure transparency around the data ingestion process in addition to transformations that occur during the data movement.</p>
+is providing the data extract. ETL tools are used to read the feed information and track them by updating and loading metadata tables into data warehouse.
+At the end of the process, reconciliation reports are generated to ensure transparency around the data ingestion process in addition to
+transformations that occur during the data movement.</p>
 <p><strong>Counts and Balances</strong> - An example of the value of balancing information is when a program is used to extract data from a source system as input into a target system.
 Business rules are used to balance information such as record counts and sum of amounts on the source file and match the record counts and sum of amounts extracted for input into the target system.</p>
+<p><strong>“RECON_CONTROL”</strong> - captures reconciliation during ETL. Reconciliation is done between any two tables - a source and a target.
+A reconciliation task (DataProc) is created and which is called to make an entry in reconciliation tables post loading of target table.</p>
 <table border="1" class="colwidths-auto docutils" id="id3">
 <caption><span class="caption-text">Table ETL_OWNER.RECON_CONTROL</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">RECON_ID</th>
 <th class="head">RECON_FROM</th>
 <th class="head">RECON_TO</th>
+<th class="head">ETL_BATCH_ID</th>
 <th class="head">SOURCE_ID</th>
 <th class="head">TARGET_ID</th>
 <th class="head">SOURCE_COUNT</th>
-<th class="head">TARGET_COUNT</th>
+<th class="head">TARGET_ELIGIBLE_COUNT</th>
+<th class="head">TARGET_LOADED_COUNT</th>
+<th class="head">TARGET_EXCLUDED_COUNT</th>
+<th class="head">TARGET_FAILURE_COUNT</th>
 <th class="head">CREATED_DATE</th>
 <th class="head">CREATED_BY</th>
 <th class="head">LAST_UPDATED_DATE</th>
@@ -354,23 +367,45 @@ Business rules are used to balance information such as record counts and sum of 
 <tr class="row-even"><td>1001</td>
 <td>STG_CQPR</td>
 <td>FINANCIAL_TRANS_EVENT</td>
-<td>ETL_BATCH_ID/FILE_NAME</td>
-<td>PROCESS_ID</td>
+<td>ETL_BATCH_ID</td>
+<td>Source process id (if any)</td>
+<td>Target process id</td>
 <td>1000</td>
 <td>700</td>
 <td>SYSDATE</td>
 <td>PROCESS_ID</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
 </tr>
 </tbody>
 </table>
+<p>Fields Description:</p>
+<ul class="simple">
+<li>RECON_ID - sequence generated surrogate key</li>
+<li>RECON_FROM - source table</li>
+<li>RECON_TO - target table</li>
+<li>ETL_BATCH_ID - ETL_BATCH_ID from source table which is being processed/loaded to target</li>
+<li>SOURCE_ID - identifier for the source table if any such as process_id</li>
+<li>TARGET_ID - identifier for the target table such as process_id</li>
+<li>SOURCE_COUNT - count of records in source table</li>
+<li>TARGET_ELIGIBLE_COUNT - count of records eligible for loading into target e.g. if the source is split into two target loading - SME and Corporates.</li>
+<li>TARGET_LOADED_COUNT - Actual number of rows loaded to target</li>
+<li>TARGET_EXCLUDED_COUNT - Records eligible but not loaded into target because of exclusion filters or joins</li>
+<li>TARGET_FAILURE_COUNT - Records eligible but not loaded into target because of failing business constraints</li>
+<li>CREATED_DATE - (audit field) date of creation of this control record</li>
+<li>CREATED_BY - (audit field) process/session-id etc. of the process which inserted this control record</li>
+<li>LAST_UPDATED_DATE - (audit field) left blank as we don’t expect this table to be updated</li>
+<li>LAST_UPDATED_BY - (audit field) left blank as we don’t expect this table to be updated</li>
+</ul>
+<p><strong>RECON_CONTROL_DETAILS</strong> - captures breakup of exclusions and business failures from reconciliation.</p>
 <table border="1" class="colwidths-auto docutils" id="id4">
 <caption><span class="caption-text">Table ETL_OWNER.RECON_CONTROL_DETAILS</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">RECON_ID</th>
 <th class="head">RECON_TYPE</th>
-<th class="head">CATEGORY</th>
 <th class="head">KEY</th>
 <th class="head">VALUE</th>
 <th class="head">CREATED_DATE</th>
@@ -382,8 +417,7 @@ Business rules are used to balance information such as record counts and sum of 
 <tbody valign="top">
 <tr class="row-even"><td>1001</td>
 <td>COUNT</td>
-<td>EXCLUSION</td>
-<td>REPRESENTMENT</td>
+<td>101</td>
 <td>54</td>
 <td>SYSDATE</td>
 <td>PROCESS_ID</td>
@@ -392,8 +426,7 @@ Business rules are used to balance information such as record counts and sum of 
 </tr>
 <tr class="row-odd"><td>1001</td>
 <td>COUNT</td>
-<td>EXCLUSION</td>
-<td>NON-ONBOARDED</td>
+<td>102</td>
 <td>176</td>
 <td>SYSDATE</td>
 <td>PROCESS_ID</td>
@@ -402,8 +435,7 @@ Business rules are used to balance information such as record counts and sum of 
 </tr>
 <tr class="row-even"><td>1001</td>
 <td>COUNT</td>
-<td>EXCLUSION</td>
-<td>CORRECTS</td>
+<td>103</td>
 <td>32</td>
 <td>SYSDATE</td>
 <td>PROCESS_ID</td>
@@ -412,8 +444,7 @@ Business rules are used to balance information such as record counts and sum of 
 </tr>
 <tr class="row-odd"><td>1001</td>
 <td>COUNT</td>
-<td>BUSINESS-FAILURE</td>
-<td>PAN-BLANK</td>
+<td>105</td>
 <td>54</td>
 <td>SYSDATE</td>
 <td>PROCESS_ID</td>
@@ -422,9 +453,8 @@ Business rules are used to balance information such as record counts and sum of 
 </tr>
 <tr class="row-even"><td>1001</td>
 <td>COUNT</td>
-<td>BUSINESS-FAILURE</td>
-<td>CURRENCY-BLANK</td>
-<td>54</td>
+<td>106</td>
+<td>78</td>
 <td>SYSDATE</td>
 <td>PROCESS_ID</td>
 <td>&#160;</td>
@@ -432,11 +462,28 @@ Business rules are used to balance information such as record counts and sum of 
 </tr>
 </tbody>
 </table>
+<p>Fields Description:</p>
+<ul class="simple">
+<li>RECON_ID - FK to RECON_CONTROL table</li>
+<li>RECON_TYPE - COUNT or BALANCE. should be stored in REF_CODE table.</li>
+<li>KEY - FK to RECON_CONTROL_MASTER</li>
+<li>VALUE - stores count or balance amount</li>
+<li>CREATED_DATE - (audit field) date of creation of this control record</li>
+<li>CREATED_BY - (audit field) process/session-id etc. of the process which inserted this control record</li>
+<li>LAST_UPDATED_DATE - (audit field) left blank as we don’t expect this table to be updated</li>
+<li>LAST_UPDATED_BY - (audit field) left blank as we don’t expect this table to be updated</li>
+</ul>
+<p><strong>RECON_CONTROL_MASTER</strong> - captures master data of exclusions and business failures and actions to be taken.</p>
 <table border="1" class="colwidths-auto docutils" id="id5">
 <caption><span class="caption-text">Table ETL_OWNER.RECON_CONTROL_MASTER</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">RECON_KEY</th>
+<tr class="row-odd"><th class="head">KEY</th>
+<th class="head">NAME</th>
+<th class="head">CATEGORY</th>
 <th class="head">DESCRIPTION</th>
+<th class="head">NOTIFICATION</th>
+<th class="head">REPROCESS_FLAG</th>
+<th class="head">RECOVERY_PROCESS</th>
 <th class="head">CREATED_DATE</th>
 <th class="head">CREATED_BY</th>
 <th class="head">LAST_UPDATED_DATE</th>
@@ -444,15 +491,61 @@ Business rules are used to balance information such as record counts and sum of 
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>REPRESENTMENT</td>
+<tr class="row-even"><td>101</td>
+<td>REPRESENTMENT</td>
+<td>EXCLUSION</td>
 <td>Representments</td>
+<td>&#160;</td>
+<td>N</td>
+<td>&#160;</td>
 <td>SYSDATE</td>
 <td>PROCESS_ID</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>NON-ONBOARDED</td>
-<td>Merchants not onboarded to Digital</td>
+<tr class="row-odd"><td>101</td>
+<td>NON-ONBOARDED</td>
+<td>EXCLUSION</td>
+<td>Merchants not onboarded</td>
+<td>&#160;</td>
+<td>N</td>
+<td>&#160;</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>101</td>
+<td>CORRECTS</td>
+<td>EXCLUSION</td>
+<td>Corrects event</td>
+<td>&#160;</td>
+<td>N</td>
+<td>&#160;</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>101</td>
+<td>PAN-MISSING</td>
+<td>FAILURE</td>
+<td>PAN is missing</td>
+<td>&#160;</td>
+<td>N</td>
+<td>&#160;</td>
+<td>SYSDATE</td>
+<td>PROCESS_ID</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>101</td>
+<td>CURRENCY-MISSING</td>
+<td>FAILURE</td>
+<td>Currency is missing</td>
+<td>&#160;</td>
+<td>N</td>
+<td>&#160;</td>
 <td>SYSDATE</td>
 <td>PROCESS_ID</td>
 <td>&#160;</td>
@@ -460,6 +553,20 @@ Business rules are used to balance information such as record counts and sum of 
 </tr>
 </tbody>
 </table>
+<p>Fields Description:</p>
+<ul class="simple">
+<li>KEY - Sequence generated surrogate key</li>
+<li>NAME - Name of the exclusion or failure</li>
+<li>CATEGORY - one of - EXCLUSION, FAILURE or WARNING. WARNINGs are not part of reconciliation as they don’t result in dropping of records e.g. MCC is blank.</li>
+<li>DESCRIPTION - description of the exclusion or failure</li>
+<li>NOTIFICATION - Whether to send notifications and to whom</li>
+<li>REPROCESS_FLAG - Y or N - whether to attempt reprocessing at a later time.</li>
+<li>RECOVERY_PROCESS - Link recovery procedure if any</li>
+<li>CREATED_DATE - (audit field) date of creation of this control record</li>
+<li>CREATED_BY - (audit field) process/session-id etc. of the process which inserted this control record</li>
+<li>LAST_UPDATED_DATE - (audit field) left blank as we don’t expect this table to be updated</li>
+<li>LAST_UPDATED_BY - (audit field) left blank as we don’t expect this table to be updated</li>
+</ul>
 </div>
 </div>
 

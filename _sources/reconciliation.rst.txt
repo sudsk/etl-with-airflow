@@ -38,7 +38,7 @@ Transaction Data Reconciliation
 Reconcile count, balances e.g. sum, etc. from staging till the target layer and capture all business failures, exclusions count.
 
 
-Source data transfer metadata
+Source data transfer controls
 ------------------------------
 
 Data transfer through tables
@@ -65,12 +65,12 @@ Fields Description:
 * TABLE_FILE_NAME - Staging table names or file names e.g. STG_CQPR
 * ETL_BATCH_ID - same as the one inserted into the staging table for this particular transfer
 * ROW_COUNT - count of records in the staging table or file
-* BALANCE_COLUMN - the field used for balances e.g. PAYER_AMOUNT
-* BALANCE_SUM - the balance amount, usually the aggregate function should be SUM in all cases
-* CREATED_DATE - (audit column) date of creation of this control record
-* CREATED_BY - (audit column) process/session-id etc. of the process which inserted this control record
-* LAST_UPDATED_DATE - (audit column) left blank as we don't expect this table to be updated
-* LAST_UPDATED_BY - (audit column) left blank as we don't expect this table to be updated
+* BALANCE_COLUMN - (optional field) the field used for balances e.g. PAYER_AMOUNT
+* BALANCE_SUM - (optional field) the balance amount, usually the aggregate function should be SUM in all cases
+* CREATED_DATE - (audit field) date of creation of this control record
+* CREATED_BY - (audit field) process/session-id etc. of the process which inserted this control record
+* LAST_UPDATED_DATE - (audit field) left blank as we don't expect this table to be updated
+* LAST_UPDATED_BY - (audit field) left blank as we don't expect this table to be updated
 
 Data transfer through files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -90,7 +90,14 @@ The structure of control file is comma-delimited::
    "test_20180425105233.gz","20000","43856377","1446861148","CKSUM"
 
 The above control file shows that "test_20180425105233.gz" contains 20,000 files, the file size of "test_20180425105233.gz" is 43856377 bytes and CKSUM checksum is 1446861148.
-CKSUM_TYPE could be MD5 or simple UNIX cksum.
+
+Fields Description:
+
+* FILE_NAME - data file name. could be a compressed file. if compressed use standard compression techniques e.g. gz or zip. 
+* FILE_COUNT - if compressed file, then the number of files inside. if uncompressed file, then the number of records inside.
+* FILE_SIZE - size of the file in bytes given by FILE_NAME
+* CHECKSUM - checksum of the file given by FILE_NAME
+* CHECKSUM_TYPE - checksum method e.g. CKSUM (for UNIX cksum) or MD5
 
 The data file names should be unique, both the compressed file and it's content files should be unique. This is to prevent duplicates.
 Duplicate files are a common occurrence when files are being received daily/weekly/monthly from another application. 
@@ -98,7 +105,7 @@ Sometimes, the previous day’s file has been sent in error. Prior to processing
 correct day’s file will be processed, or in the case of an incorrect file being received, an exception report will be immediately flagged and 
 the process will prevent the incorrect file from processing.
 
-On the target side, the control-file should be loaded into the "REC_OWNER.ETL_SOURCE_CONTROL" table:
+On the target side, the control-file should be loaded into the "ETL_OWNER.ETL_SOURCE_CONTROL" table:
 
 .. csv-table:: Table ETL_OWNER.ETL_SOURCE_CONTROL
    :header: "SOURCE_SYSTEM","INTERFACE_NAME","TABLE_FILE_NAME","ETL_BATCH_ID","ROW_COUNT","SUM_AMOUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
@@ -112,40 +119,88 @@ Streaming Data transfer
 Kafka Topics, JMS etc.
 
 Reconciliation Framework
-------------------------
+---------------------------
 Combination of ETL tools capabilities and scripting techniques to get counts and balances at the source level when the application 
-is providing the data extract. ETL tools are used to read the feed information and
-track them by updating and loading metadata tables into data warehouse. At the end of the process, reconciliation reports are generated 
-to ensure transparency around the data ingestion process in addition to transformations that occur during the data movement. 
+is providing the data extract. ETL tools are used to read the feed information and track them by updating and loading metadata tables into data warehouse. 
+At the end of the process, reconciliation reports are generated to ensure transparency around the data ingestion process in addition to 
+transformations that occur during the data movement. 
    
 **Counts and Balances** - An example of the value of balancing information is when a program is used to extract data from a source system as input into a target system. 
 Business rules are used to balance information such as record counts and sum of amounts on the source file and match the record counts and sum of amounts extracted for input into the target system.
 
+**"RECON_CONTROL"** - captures reconciliation during ETL. Reconciliation is done between any two tables - a source and a target. 
+A reconciliation task (DataProc) is created and which is called to make an entry in reconciliation tables post loading of target table.
+
 .. csv-table:: Table ETL_OWNER.RECON_CONTROL
-   :header: "RECON_ID","RECON_FROM","RECON_TO","SOURCE_ID","TARGET_ID","SOURCE_COUNT","TARGET_COUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
+   :header: "RECON_ID","RECON_FROM","RECON_TO","ETL_BATCH_ID","SOURCE_ID","TARGET_ID","SOURCE_COUNT","TARGET_ELIGIBLE_COUNT","TARGET_LOADED_COUNT","TARGET_EXCLUDED_COUNT","TARGET_FAILURE_COUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
    
-   "1001","STG_CQPR","FINANCIAL_TRANS_EVENT",ETL_BATCH_ID/FILE_NAME,PROCESS_ID,1000,700,"SYSDATE","PROCESS_ID","",""
+   "1001","STG_CQPR","FINANCIAL_TRANS_EVENT","ETL_BATCH_ID",Source process id (if any),Target process id,1000,700,"SYSDATE","PROCESS_ID","",""
 
+Fields Description:
+
+* RECON_ID - sequence generated surrogate key
+* RECON_FROM - source table
+* RECON_TO - target table
+* ETL_BATCH_ID - ETL_BATCH_ID from source table which is being processed/loaded to target
+* SOURCE_ID - identifier for the source table if any such as process_id 
+* TARGET_ID - identifier for the target table such as process_id 
+* SOURCE_COUNT - count of records in source table
+* TARGET_ELIGIBLE_COUNT - count of records eligible for loading into target e.g. if the source is split into two target loading - SME and Corporates.
+* TARGET_LOADED_COUNT - Actual number of rows loaded to target
+* TARGET_EXCLUDED_COUNT - Records eligible but not loaded into target because of exclusion filters or joins
+* TARGET_FAILURE_COUNT - Records eligible but not loaded into target because of failing business constraints
+* CREATED_DATE - (audit field) date of creation of this control record
+* CREATED_BY - (audit field) process/session-id etc. of the process which inserted this control record
+* LAST_UPDATED_DATE - (audit field) left blank as we don't expect this table to be updated
+* LAST_UPDATED_BY - (audit field) left blank as we don't expect this table to be updated
+
+**RECON_CONTROL_DETAILS** - captures breakup of exclusions and business failures from reconciliation.
    
 .. csv-table:: Table ETL_OWNER.RECON_CONTROL_DETAILS
-   :header: "RECON_ID","RECON_TYPE","CATEGORY","KEY","VALUE","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
+   :header: "RECON_ID","RECON_TYPE","KEY","VALUE","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
    
-   "1001","COUNT","EXCLUSION","REPRESENTMENT",54,"SYSDATE","PROCESS_ID","",""
-   "1001","COUNT","EXCLUSION","NON-ONBOARDED",176,"SYSDATE","PROCESS_ID","",""
-   "1001","COUNT","EXCLUSION","CORRECTS",32,"SYSDATE","PROCESS_ID","",""
-   "1001","COUNT","BUSINESS-FAILURE","PAN-BLANK",54,"SYSDATE","PROCESS_ID","",""
-   "1001","COUNT","BUSINESS-FAILURE","CURRENCY-BLANK",54,"SYSDATE","PROCESS_ID","",""
+   "1001","COUNT","101",54,"SYSDATE","PROCESS_ID","",""
+   "1001","COUNT","102",176,"SYSDATE","PROCESS_ID","",""
+   "1001","COUNT","103",32,"SYSDATE","PROCESS_ID","",""
+   "1001","COUNT","105",54,"SYSDATE","PROCESS_ID","",""
+   "1001","COUNT","106",78,"SYSDATE","PROCESS_ID","",""
 
+Fields Description:
+
+* RECON_ID - FK to RECON_CONTROL table
+* RECON_TYPE - COUNT or BALANCE. should be stored in REF_CODE table. 
+* KEY - FK to RECON_CONTROL_MASTER
+* VALUE - stores count or balance amount
+* CREATED_DATE - (audit field) date of creation of this control record
+* CREATED_BY - (audit field) process/session-id etc. of the process which inserted this control record
+* LAST_UPDATED_DATE - (audit field) left blank as we don't expect this table to be updated
+* LAST_UPDATED_BY - (audit field) left blank as we don't expect this table to be updated
+   
+**RECON_CONTROL_MASTER** - captures master data of exclusions and business failures and actions to be taken.
    
 .. csv-table:: Table ETL_OWNER.RECON_CONTROL_MASTER
-   :header: "RECON_KEY","DESCRIPTION","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
+   :header: "KEY","NAME","CATEGORY","DESCRIPTION","NOTIFICATION","REPROCESS_FLAG","RECOVERY_PROCESS","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto 
    
-   "REPRESENTMENT","Representments","SYSDATE","PROCESS_ID","",""
-   "NON-ONBOARDED","Merchants not onboarded to Digital","SYSDATE","PROCESS_ID","",""
+   "101","REPRESENTMENT","EXCLUSION","Representments","","N","","SYSDATE","PROCESS_ID","",""
+   "101","NON-ONBOARDED","EXCLUSION","Merchants not onboarded","","N","","SYSDATE","PROCESS_ID","",""
+   "101","CORRECTS","EXCLUSION","Corrects event","","N","","SYSDATE","PROCESS_ID","",""
+   "101","PAN-MISSING","FAILURE","PAN is missing","","N","","SYSDATE","PROCESS_ID","",""
+   "101","CURRENCY-MISSING","FAILURE","Currency is missing","","N","","SYSDATE","PROCESS_ID","",""
 
+Fields Description:
 
-	
-    
+* KEY - Sequence generated surrogate key
+* NAME - Name of the exclusion or failure
+* CATEGORY - one of - EXCLUSION, FAILURE or WARNING. WARNINGs are not part of reconciliation as they don't result in dropping of records e.g. MCC is blank.
+* DESCRIPTION - description of the exclusion or failure 
+* NOTIFICATION - Whether to send notifications and to whom
+* REPROCESS_FLAG - Y or N - whether to attempt reprocessing at a later time.
+* RECOVERY_PROCESS - Link recovery procedure if any
+* CREATED_DATE - (audit field) date of creation of this control record
+* CREATED_BY - (audit field) process/session-id etc. of the process which inserted this control record
+* LAST_UPDATED_DATE - (audit field) left blank as we don't expect this table to be updated
+* LAST_UPDATED_BY - (audit field) left blank as we don't expect this table to be updated
+   
