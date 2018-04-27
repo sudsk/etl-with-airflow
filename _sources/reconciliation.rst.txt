@@ -135,7 +135,7 @@ A reconciliation task (DataProc) is created and which is called to make an entry
    :header: "RECON_ID","RECON_FROM","RECON_TO","ETL_BATCH_ID","SOURCE_ID","TARGET_ID","SOURCE_COUNT","TARGET_ELIGIBLE_COUNT","TARGET_LOADED_COUNT","TARGET_EXCLUDED_COUNT","TARGET_FAILURE_COUNT","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
    :widths: auto   
    
-   "1001","STG_CQPR","FINANCIAL_TRANS_EVENT","ETL_BATCH_ID",Source process id (if any),Target process id,1000,700,"SYSDATE","PROCESS_ID","",""
+   "1001","STG_CQPR","FINANCIAL_TRANS_EVENT","ETL_BATCH_ID",Source process id (if any),Target process id,1000,900,700,150,50,"SYSDATE","PROCESS_ID","",""
 
 Fields Description:
 
@@ -155,7 +155,7 @@ Fields Description:
 * LAST_UPDATED_DATE - (audit field) left blank as we don't expect this table to be updated
 * LAST_UPDATED_BY - (audit field) left blank as we don't expect this table to be updated
 
-**RECON_CONTROL_DETAILS** - captures breakup of exclusions and business failures from reconciliation.
+**"RECON_CONTROL_DETAILS"** - captures breakup of exclusions and business failures from reconciliation.
    
 .. csv-table:: Table ETL_OWNER.RECON_CONTROL_DETAILS
    :header: "RECON_ID","RECON_TYPE","KEY","VALUE","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
@@ -178,7 +178,7 @@ Fields Description:
 * LAST_UPDATED_DATE - (audit field) left blank as we don't expect this table to be updated
 * LAST_UPDATED_BY - (audit field) left blank as we don't expect this table to be updated
    
-**RECON_CONTROL_MASTER** - captures master data of exclusions and business failures and actions to be taken.
+**"RECON_CONTROL_MASTER"** - captures master data of exclusions and business failures and actions to be taken.
    
 .. csv-table:: Table ETL_OWNER.RECON_CONTROL_MASTER
    :header: "KEY","NAME","CATEGORY","DESCRIPTION","NOTIFICATION","REPROCESS_FLAG","RECOVERY_PROCESS","CREATED_DATE","CREATED_BY","LAST_UPDATED_DATE","LAST_UPDATED_BY"
